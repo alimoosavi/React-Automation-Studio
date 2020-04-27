@@ -164,13 +164,24 @@ def dbWatchControlThread():
     print("dbWatchControlThread started")
     while (True):
         
-        for watchEventName in clientDbWatchList :
-            
+        for watchEventName in list(clientDbWatchList) :
+            #print("clientDbWatchList[watchEventName]['sockets']",clientDbWatchList[watchEventName]['sockets'])
             if clientDbWatchList[watchEventName]['threadStarted'] is False:
                 clientDbWatchList[watchEventName]['thread']=threading.Thread(target=dbWatchThread,args=[watchEventName]).start()
                 clientDbWatchList[watchEventName]['threadStarted']=True
-                print("control thread starting thread",watchEventName)
-
+                clientDbWatchList[watchEventName]['closeWatch']=False
+                #print("control thread starting thread",watchEventName)
+            if len(clientDbWatchList[watchEventName]['sockets'])==0:
+               
+                if clientDbWatchList[watchEventName]['closeWatch']==False:
+                    #print("before client close")
+                    
+                    clientDbWatchList[watchEventName]['closeWatch']=True
+                    #print("after client close")
+            if clientDbWatchList[watchEventName]['threadClosed'] is True:
+                 #print("watch thread closed",watchEventName)
+                 clientDbWatchList.pop(watchEventName)
+                 #print("control thread eventname popped",watchEventName)
             # with clientDbWatchList[watchEventName]['watch'] as stream:
             #     for change in stream:
             #         try:
@@ -191,34 +202,50 @@ def dbWatchControlThread():
             #             print("Unexpected error:", sys.exc_info()[0])
             #             raise    
         time.sleep(0.1)
+
 def dbWatchThread(watchEventName):
     global clientDbWatchList
 
     print("dbWatchThread started for:",watchEventName)
-    while (True):
+    exitThread=False
+    while (exitThread==False):
         
         if watchEventName in clientDbWatchList :
             
             with clientDbWatchList[watchEventName]['watch'] as stream:
-                for change in stream:
-                    try:
-                        #documentKey = change["documentKey"]
-                        doc = clientDbWatchList[watchEventName]['collection'].find(clientDbWatchList[watchEventName]['query'])
-                        #print(str(change))
-                        #print("documentKey: ",documentKey)
-                        #print(watchEventName,change)
-                        data=dumps(doc)
-                        eventName=watchEventName
-                        dbURL=clientDbWatchList[watchEventName]['dbURL']
-                        d={'dbURL': dbURL,'write_access':True,'data': data}
-                        socketio.emit(eventName,d,str(dbURL)+'rw',namespace='/pvServer')
-                        d={'dbURL': dbURL,'write_access':False,'data': data}
-                        socketio.emit(eventName,d,str(dbURL)+'ro',namespace='/pvServer')
-                        
-                    except:
-                        print("Unexpected error:", sys.exc_info()[0])
-                        raise    
-        time.sleep(0.1)
+                #for change in stream:
+                while stream.alive:
+                    change = stream.try_next()
+                    if change is not None:
+                        try:
+                            #documentKey = change["documentKey"]
+                            doc = clientDbWatchList[watchEventName]['collection'].find(clientDbWatchList[watchEventName]['query'])
+                  #         print(str(change))
+                            #print("documentKey: ",documentKey)
+                            #print(watchEventName,change)
+                            data=dumps(doc)
+                            eventName=watchEventName
+                            dbURL=clientDbWatchList[watchEventName]['dbURL']
+                            d={'dbURL': dbURL,'write_access':True,'data': data}
+                            socketio.emit(eventName,d,str(dbURL)+'rw',namespace='/pvServer')
+                            d={'dbURL': dbURL,'write_access':False,'data': data}
+                            socketio.emit(eventName,d,str(dbURL)+'ro',namespace='/pvServer')
+                            
+                        except:
+                            print("Unexpected error:", sys.exc_info()[0])
+                            raise 
+                    #print("dbWatchThread running:",watchEventName)
+                    if clientDbWatchList[watchEventName]['closeWatch']==True:
+                        #print("clientDbWatchList[watchEventName]['closeWatch']",clientDbWatchList[watchEventName]['closeWatch']) 
+                        clientDbWatchList[watchEventName]['watch'].close()
+                       # print("dbWatchThread afterclose :",watchEventName)
+
+                    time.sleep(0.1)
+                #print("clientDbWatchList[watchEventName]['clientClosed']",clientDbWatchList[watchEventName]['clientClosed'])   
+                #print("dbWatchThread stream not alive :",watchEventName)
+                clientDbWatchList[watchEventName]['threadClosed']=True
+                exitThread=True
+                time.sleep(0.1)
 
 
 def onValueChanges(pvname=None,count=None,char_value=None,severity=None,status=None, value=None, timestamp=None, **kw):
@@ -753,18 +780,22 @@ def test_message(message):
             print("remove ",watchEventName)
             #print(message)
             dbWatchId=message['dbWatchId']
-            # try:
-            #     #print("before pop",clientPVlist[pvname1]['sockets'][request.sid]['pvConnectionIds'])
-            #     if dbWatchId in clientDbWatchList[watchEventName]['sockets'][request.sid]['dbWatchIds']:
-            #         #print("debug1: ",pvConnectionId, pvname1)
+            try:
+                #print("before pop",clientPVlist[pvname1]['sockets'][request.sid]['pvConnectionIds'])
+                if dbWatchId in clientDbWatchList[watchEventName]['sockets'][request.sid]['dbWatchIds']:
+                    print("debug1: ",dbWatchId, watchEventName)
             #         #print("before pop",clientDbWatchList[watchEventName]['sockets'][request.sid]['pvConnectionIds'])
-            #         clientDbWatchList[watchEventName]['sockets'][request.sid]['dbWatchIds'].pop(str(dbWatchId))
-            #         if len(clientDbWatchList[watchEventName]['sockets'][request.sid]['dbWatchIds'])==0:
-            #             leave_room(str(watchEventName))
-            #             clientDbWatchList[watchEventName]['sockets'].pop(request.sid)
-            #         #print("after pop",clientPVlist[pvname1]['sockets'][request.sid]['pvConnectionIds'])
-            # except:
-            #     pass
+                    clientDbWatchList[watchEventName]['sockets'][request.sid]['dbWatchIds'].pop(str(dbWatchId))
+                    print("debug2: ",dbWatchId, watchEventName)
+                    if len(clientDbWatchList[watchEventName]['sockets'][request.sid]['dbWatchIds'])==0:
+                        print("debug3: ",dbWatchId, watchEventName)
+                        leave_room(str(watchEventName))
+                        clientDbWatchList[watchEventName]['sockets'].pop(request.sid)
+                    print("debug4: ",dbWatchId, watchEventName)
+             #       print("after pop",clientPVlist[pvname1]['sockets'][request.sid]['pvConnectionIds'])
+            except:
+                print("could not remove wathcID")
+                pass
           
 
 
@@ -887,6 +918,9 @@ def databaseBroadcastRead(message):
                                 }
                                 dbWatch['thread']=None
                                 dbWatch['threadStarted']=False
+                                dbWatch['closeWatch']=False
+                                dbWatch['threadClosed']=False
+                                
                                 
                                 clientDbWatchList[watchEventName]=dbWatch
                                 join_room(str(watchEventName))
@@ -1167,6 +1201,11 @@ def test_disconnect():
 
         else:
             print("Unknown PV type")
+    try:
+        for watchEventName in list(clientDbWatchList) :
+            clientDbWatchList[watchEventName]['sockets'].pop(str(request.id))
+    except:
+        pass
     disconnect(request.sid,namespace='/pvServer')
 
 
