@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import withStyles from '@material-ui/core/styles/withStyles';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { fade} from '@material-ui/core/styles';
 import AutomationStudioContext from '../SystemComponents/AutomationStudioContext';
 import RedirectToLogIn from '../SystemComponents/RedirectToLogin.js';
 import SideBar from '../SystemComponents/SideBar';
@@ -115,6 +115,12 @@ class AlarmHandler extends Component {
         this.alarmPVDict = {}
         this.areaPVDict = {}
         this.state = {
+            alarmLogSelectedKey: null,
+            alarmLogDict: {},
+            alarmLogDisplayArray: [],
+            dbHistoryURL: '',
+            dbPVsURL: '',
+            dbConfigURL: '',
             alarmLogExpand: true,
             alarmLogIsExpanded: true,
             alarmTableExpand: true,
@@ -176,6 +182,57 @@ class AlarmHandler extends Component {
 
     handleSearchAlarmLog = (event) => {
         window.confirm('Still to be done...')
+    }
+
+    handleUpdateLogDisplayData = (alarmLogSelectedKey = null) => {
+        if (!alarmLogSelectedKey) {
+            // no selector passed
+            alarmLogSelectedKey = this.state.alarmLogSelectedKey
+        }
+        else {
+            this.setState({ alarmLogSelectedKey: alarmLogSelectedKey })
+        }
+        console.log("update log for:", alarmLogSelectedKey)
+        let alarmLogDisplayArray = []
+        const alarmLogDict = this.state.alarmLogDict
+
+        const isPV = alarmLogSelectedKey.includes('*')
+        const isSubArea = alarmLogSelectedKey.includes('=') && !isPV
+
+        // console.log(alarmLogSelectedKey)
+
+        // Map alarmLogDict
+        Object.keys(alarmLogDict).map(key => {
+            // console.log(key)
+            if (isPV) {
+                if (key === alarmLogSelectedKey) {
+                    alarmLogDisplayArray = alarmLogDisplayArray.concat(alarmLogDict[key])
+                }
+            }
+            else if (isSubArea) {
+                const areaKey = key.split('*')[0]
+                if (areaKey === alarmLogSelectedKey) {
+                    alarmLogDisplayArray = alarmLogDisplayArray.concat(alarmLogDict[key])
+                }
+            }
+            else {
+                let areaKey = key.split('*')[0]
+                areaKey = key.split('=')[0]
+                if (areaKey === alarmLogSelectedKey) {
+                    alarmLogDisplayArray = alarmLogDisplayArray.concat(alarmLogDict[key])
+                }
+
+            }
+        })
+
+        alarmLogDisplayArray = alarmLogDisplayArray.sort(function (a, b) {
+            return b.timestamp - a.timestamp
+        })
+
+        // console.log(alarmLogDisplayArray)
+
+        this.setState({ alarmLogDisplayArray: alarmLogDisplayArray })
+
     }
 
     handleExpansionComplete = (panelName, isExpanded) => {
@@ -332,7 +389,8 @@ class AlarmHandler extends Component {
     }
 
     handleTableRowClick = (event, alarmName) => {
-        this.setState({ alarmLogSelectedName: alarmName })
+        this.setState({ alarmLogSelectedName: alarmName.replace(/[=*]/g, " > ") })
+        this.handleUpdateLogDisplayData(alarmName)
     }
 
     handleTableItemRightClick = (event, index) => {
@@ -482,9 +540,13 @@ class AlarmHandler extends Component {
         // console.log(this.state.areaSubAreaOpen)
         this.setState({ areaSelectedIndex: index, areaSelectedName: areaSelectedName, alarmLogSelectedName: areaSelectedName })
         this.setState({ areaSubAreaOpen: areaSubAreaOpen })
+
+        // console.log(index)
+        this.handleUpdateLogDisplayData(index)
     };
 
     handleNewDbPVsList = (msg) => {
+        // console.log('handleNewDbPVsList')
         const data = JSON.parse(msg.data);
         // console.log(data)
         const areaNames = []
@@ -545,6 +607,7 @@ class AlarmHandler extends Component {
                 const areaSelectedIndex = areaNames[0]["area"]
                 const areaSelectedName = areaNames[0]["area"]
                 this.setState({ areaSubAreaOpen: areaSubAreaOpen, areaSelectedIndex: areaSelectedIndex, areaSelectedName: areaSelectedName, alarmLogSelectedName: areaSelectedName })
+                this.setState({ alarmLogSelectedKey: areaSelectedIndex })
             }
             // console.log(lastAlarm)
             this.setState({ lastAlarm })
@@ -608,6 +671,49 @@ class AlarmHandler extends Component {
         }
     }
 
+    handleDatabaseReadWatchAndBroadcastAck = (msg) => {
+        // console.log(msg)
+        if (typeof msg !== 'undefined') {
+            // console.log("dbWatchId: ", msg.dbWatchId)
+            this.setState({ dbWatchId: msg.dbWatchId })
+        }
+    }
+    handleNewDbLogReadWatchBroadcast = (msg) => {
+        const data = JSON.parse(msg.data);
+        console.log(data)
+        // const alarmLogDict = {}
+        // data.map((area, index) => {
+        //     alarmLogDict[`${area["area"]}`] = area["history"]
+        //     // Map alarms in area
+        //     Object.keys(area["pvs"]).map(alarmKey => {
+        //         alarmLogDict[`${area["area"]}*${area["pvs"][alarmKey]["name"]}`] = area["pvs"][alarmKey]["history"]
+        //     })
+        //     // Map subAreas
+        //     Object.keys(area).map(areaKey => {
+        //         if (areaKey.includes("subArea")) {
+        //             alarmLogDict[`${area["area"]}=${area[areaKey]["name"]}`] = area[areaKey]["history"]
+        //             // Map alarms in subarea
+        //             Object.keys(area[areaKey]["pvs"]).map(alarmKey => {
+        //                 alarmLogDict[`${area["area"]}=${area[areaKey]["name"]}*${area[areaKey]["pvs"][alarmKey]["name"]}`] = area[areaKey]["pvs"][alarmKey]["history"]
+        //             })
+        //         }
+        //     })
+
+        // })
+
+        // const oldAlarmLogDict = this.state.alarmLogDict
+        // this.setState({ alarmLogDict: alarmLogDict })
+
+        // if (!isEmpty(oldAlarmLogDict)) {
+        //     if (oldAlarmLogDict[this.state.alarmLogSelectedKey].length !== alarmLogDict[this.state.alarmLogSelectedKey].length) {
+        //         this.handleUpdateLogDisplayData()
+        //     }
+        // }
+        // else {
+        //     this.handleUpdateLogDisplayData()
+        // }
+    }
+
     handleDbConfig = (msg) => {
         const data = JSON.parse(msg.data)[0];
         this.setState({ alarmIOCPVPrefix: data["alarmIOCPVPrefix"], alarmIOCPVSuffix: data['alarmIOCPVSuffix'] })
@@ -625,28 +731,50 @@ class AlarmHandler extends Component {
         const ALARM_DATABASE = "ALARM_DATABASE"
         const dbName = "demoAlarmDatabase"
         let colName = "pvs"
-        let dbURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName + ":Parameters:{}"
+        const dbPVsURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName + ":Parameters:{}"
+        this.setState({ dbPVsURL: dbPVsURL })
 
-        socket.emit('databaseBroadcastRead', { dbURL: dbURL, 'clientAuthorisation': jwt }, (data) => {
+        socket.emit('databaseBroadcastRead', { dbURL: dbPVsURL, 'clientAuthorisation': jwt }, (data) => {
 
             if (data !== "OK") {
                 console.log("ackdata", data);
             }
         });
-        socket.on('databaseData:' + dbURL, this.handleNewDbPVsList);
+        socket.on('databaseData:' + dbPVsURL, this.handleNewDbPVsList);
+
+        colName = "history"
+        const dbHistoryURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName + ":Parameters:{}"
+        this.setState({ dbHistoryURL: dbHistoryURL })
+
+        socket.emit('databaseReadWatchAndBroadcast', { dbURL: dbHistoryURL, 'clientAuthorisation': jwt }, this.handleDatabaseReadWatchAndBroadcastAck)
+        socket.on('databaseWatchData:' + dbHistoryURL, this.handleNewDbLogReadWatchBroadcast);
 
         colName = "config"
+        const dbConfigURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName + ":Parameters:{}"
+        this.setState({ dbConfigURL: dbConfigURL })
 
-        dbURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName + ":Parameters:{}"
-
-        socket.emit('databaseBroadcastRead', { dbURL: dbURL, 'clientAuthorisation': jwt }, (data) => {
+        socket.emit('databaseBroadcastRead', { dbURL: dbConfigURL, 'clientAuthorisation': jwt }, (data) => {
 
             if (data !== "OK") {
                 console.log("ackdata", data);
             }
         });
-        socket.on('databaseData:' + dbURL, this.handleDbConfig);
+        socket.on('databaseData:' + dbConfigURL, this.handleDbConfig);
 
+    }
+
+    componentWillUnmount() {
+        let jwt = JSON.parse(localStorage.getItem('jwt'));
+        if (jwt === null) {
+            jwt = 'unauthenticated'
+        }
+        let socket = this.context.socket;
+        if (typeof (this.state.dbWatchId) !== 'undefined') {
+            socket.emit('remove_dbWatch', { dbURL: this.state.dbHistoryURL, dbWatchId: this.state.dbWatchId, 'clientAuthorisation': jwt });
+        }
+        socket.removeListener('databaseWatchData:' + this.state.dbHistoryURL, this.handleNewDbLogReadWatchBroadcast);
+        socket.removeListener('databaseData:' + this.state.dbPVsURL, this.handleNewDbPVsList);
+        socket.removeListener('databaseData:' + this.state.dbConfigURL, this.handleDbConfig);
     }
 
     loadAlarmTable = () => {
@@ -939,6 +1067,7 @@ class AlarmHandler extends Component {
                                     <ExpansionPanelDetails>
                                         <AlarmLog
                                             height={alarmLogHeight}
+                                            alarmLogDisplayArray={this.state.alarmLogDisplayArray}
                                         />
                                     </ExpansionPanelDetails>
                                 </ExpansionPanel>

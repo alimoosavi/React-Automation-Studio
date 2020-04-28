@@ -154,7 +154,7 @@ class AlarmTable extends Component {
                                             hover={this.props.areaEnabled[areaName]}
                                             onContextMenu={event => this.props.tableItemRightClick(event, areaAlarmName)}
                                             selected={this.props.alarmRowSelected[areaAlarmName]}
-                                            onClick={event => this.props.tableRowClick(event, areaAlarms[areaAlarmName]["name"])}
+                                            onClick={event => this.props.tableRowClick(event, `${areaName}*${areaAlarms[areaAlarmName]["name"]}`)}
                                         >
                                             <Menu
                                                 keepMounted

@@ -29,34 +29,28 @@ class AlarmLog extends Component {
         this.state = {}
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        const update = this.props.height !== nextProps.height || this.props.alarmLogDisplayArray.length !== nextProps.alarmLogDisplayArray.length
+        return update
+    }
+
     render() {
-        const { classes } = this.props;
-        const dummyData = []
-        for (var i = 0; i <= 100; i++) {
-            dummyData.push(i);
-        }
-        const dummyLog = dummyData.map((entry) => {
+        console.log(this.props.alarmLogDisplayArray.length)
+        const logData = this.props.alarmLogDisplayArray.map((entry) => {
+            // console.log(entry)
+            const date = new Date(entry.timestamp*1000)
             return (
-                // <ListItem button dense>
-                //     <ListItemText primary={`Log${entry}: xxxxx xxxx xxxxx xxxxxxxx xx xxxxx xxxxx xxxxx`} />
-                // </ListItem>
-                <TableRow hover key={entry}>
-                    <TableCell>{`Log${entry}: xxxxx xxxx xxxxx xxxxxxxx xx xxxxx xxxxx xxxxx`}</TableCell>
+                <TableRow hover key={`${entry.timestamp}-${entry.entry}`}>
+                    <TableCell>{`${date.toLocaleString()}: ${entry.entry}`}</TableCell>
                 </TableRow>
             )
         })
 
         return (
-            // <List style={{ width: '100%', height: this.props.height, overflow: 'auto' }}>
-            //     {dummyLog}
-            // </List>
-            // {/* <div style={{ width: '100%', height: this.props.height, overflow: 'auto' }}>
-            //     {dummyLog}
-            // </div> */}
             <TableContainer style={{ height: this.props.height, overflow: 'auto' }}>
                 <Table aria-label="Log Table" size="small" >
                     <TableBody>
-                        {dummyLog}
+                        {logData}
                     </TableBody>
                 </Table>
             </TableContainer>
