@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 
 import withStyles from '@material-ui/core/styles/withStyles';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import AutomationStudioContext from '../SystemComponents/AutomationStudioContext';
 import RedirectToLogIn from '../SystemComponents/RedirectToLogin.js';
 import SideBar from '../SystemComponents/SideBar';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import InputBase from '@material-ui/core/InputBase';
 
 
 import DataConnection from '../SystemComponents/DataConnection';
@@ -19,6 +21,7 @@ import AlarmTable from './AlarmTable';
 import AlarmLog from './AlarmLog';
 
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
@@ -29,9 +32,6 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-// import Paper from '@material-ui/core/Paper';
-// import Slide from '@material-ui/core/Slide';
 
 function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -66,7 +66,47 @@ const styles = theme => ({
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
-    }
+    },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade(theme.palette.common.white, 0.15),
+        '&:hover': {
+            backgroundColor: fade(theme.palette.common.white, 0.25),
+        },
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(1),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            width: '20ch',
+            '&:focus': {
+                width: '30ch',
+            },
+        },
+    },
+
 });
 class AlarmHandler extends Component {
     constructor(props) {
@@ -128,6 +168,14 @@ class AlarmHandler extends Component {
 
     handleDoNothing = () => {
 
+    }
+
+    handleSearchAlarmTable = (event) => {
+        window.confirm('Still to be done...')
+    }
+
+    handleSearchAlarmLog = (event) => {
+        window.confirm('Still to be done...')
     }
 
     handleExpansionComplete = (panelName, isExpanded) => {
@@ -696,7 +744,6 @@ class AlarmHandler extends Component {
                 {alarmPVs}
                 {areaPVs}
                 {ackPV}
-
                 <div id="test" className={classes.root}>
                     <div
                         style={{
@@ -805,7 +852,26 @@ class AlarmHandler extends Component {
                                     >
                                         <div style={{ display: 'flex', width: '100%' }}>
                                             <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 20 }}>{`ALARM TABLE: ${areaSelectedName}`}</div>
-                                            <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{this.state.alarmTableExpand ? '[click to hide]' : '[click to show]'}</div>
+                                            <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{
+                                                this.state.alarmTableExpand
+                                                    ? <div className={classes.search}>
+                                                        <div className={classes.searchIcon}>
+                                                            <SearchIcon />
+                                                        </div>
+                                                        <InputBase
+                                                            placeholder="Search alarm table…"
+                                                            classes={{
+                                                                root: classes.inputRoot,
+                                                                input: classes.inputInput,
+                                                            }}
+                                                            inputProps={{ 'aria-label': 'search' }}
+                                                            onClick={event => event.stopPropagation()}
+                                                            onFocus={event => event.stopPropagation()}
+                                                            onChange={event => this.handleSearchAlarmTable(event)}
+                                                        />
+                                                    </div>
+                                                    : '[click to show]'
+                                            }</div>
                                         </div>
 
                                     </ExpansionPanelSummary>
@@ -846,7 +912,27 @@ class AlarmHandler extends Component {
                                     >
                                         <div style={{ display: 'flex', width: '100%' }}>
                                             <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 20 }}>{`ALARM LOG: ${this.state.alarmLogSelectedName}`}</div>
-                                            <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{this.state.alarmLogExpand ? '[click to hide]' : '[click to show]'}</div>
+                                            <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{
+                                                this.state.alarmLogExpand
+                                                    ? <div className={classes.search}>
+                                                        <div className={classes.searchIcon}>
+                                                            <SearchIcon />
+                                                        </div>
+                                                        <InputBase
+                                                            placeholder="Search alarm log…"
+                                                            classes={{
+                                                                root: classes.inputRoot,
+                                                                input: classes.inputInput,
+                                                            }}
+                                                            inputProps={{ 'aria-label': 'search' }}
+                                                            onClick={event => event.stopPropagation()}
+                                                            onFocus={event => event.stopPropagation()}
+                                                            onChange={event => this.handleSearchAlarmLog(event)}
+                                                        />
+                                                    </div>
+                                                    : '[click to show]'
+                                            }
+                                            </div>
                                         </div>
 
                                     </ExpansionPanelSummary>
