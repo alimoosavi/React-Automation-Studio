@@ -1,6 +1,4 @@
-[
-    {
-        "alarmIOCPVPrefix": "alarmIOC:",
-        "alarmIOCPVSuffix": ""
-    }
-]
+[{
+    "alarmIOCPVPrefix": "alarmIOC:",
+    "alarmIOCPVSuffix": ""
+}]

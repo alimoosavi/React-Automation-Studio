@@ -32,6 +32,11 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
+
+import PublicIcon from '@material-ui/icons/Public';
 
 function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -115,16 +120,22 @@ class AlarmHandler extends Component {
         this.alarmPVDict = {}
         this.areaPVDict = {}
         this.state = {
+            enableAllAreas: true,
+            enableAllAreasId: null,
+            globalContextOpen: false,
             alarmLogSearchString: '',
             alarmLogSearchStringStore: '',
             alarmLogSearchTimer: null,
             alarmTableSearchString: '',
+            alarmTableSearchStringStore: '',
+            alarmTableSearchTimer: null,
             alarmLogSelectedKey: null,
             alarmLogDict: {},
             alarmLogDisplayArray: [],
             dbHistoryURL: '',
             dbPVsURL: '',
             dbConfigURL: '',
+            dbGlobalURL: '',
             alarmLogExpand: true,
             alarmLogIsExpanded: true,
             alarmTableExpand: true,
@@ -152,7 +163,7 @@ class AlarmHandler extends Component {
             areaEnabled: {},
             areaMongoId: {},
             areaNames: [],
-            areaSelectedIndex: null,
+            areaSelectedIndex: '',
             areaSelectedName: '',
             areaSubAreaOpen: {},
             areaSubAreaMongoId: {},
@@ -180,8 +191,64 @@ class AlarmHandler extends Component {
 
     }
 
+    handleDisableEnableGlobal = (value) => {
+        // console.log(value)
+        let socket = this.context.socket;
+        let jwt = JSON.parse(localStorage.getItem('jwt'));
+        if (jwt === null) {
+            jwt = 'unauthenticated'
+        }
+
+        const ALARM_DATABASE = "ALARM_DATABASE"
+        const dbName = "demoAlarmDatabase"
+        const colName = "global"
+        const dbURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName
+
+        const id = this.state.enableAllAreasId
+        const newvalues = { '$set': { ["enableAllAreas"]: value } }
+
+        // console.log(newvalues)
+
+        socket.emit('databaseUpdateOne', { dbURL: dbURL, 'id': id, 'newvalues': newvalues, 'clientAuthorisation': jwt }, (data) => {
+            //  console.log("ackdata", data);
+            if (data == "OK") {
+                socket.emit('databaseBroadcastRead', { dbURL: dbURL + ':Parameters:{}', 'clientAuthorisation': jwt }, (data) => {
+                    if (data !== "OK") {
+                        console.log("ackdata", data);
+                    }
+                })
+            } else {
+                console.log("Global var update unsuccessful")
+            }
+        })
+
+        this.setState({ globalContextOpen: false })
+    }
+
+    handleIconClick = (event) => {
+        // console.log("right click")
+        event.preventDefault();
+
+        const contextMouseX = event.clientX - 2
+        const contextMouseY = event.clientY - 2
+
+        this.setState({ globalContextOpen: true, contextMouseX: contextMouseX, contextMouseY: contextMouseY })
+    }
+
+    handleAlarmGlobalContextClose = () => {
+        this.setState({ globalContextOpen: false })
+    }
+
     handleSearchAlarmTable = (event) => {
-        this.setState({ alarmTableSearchString: event.target.value })
+        if (this.state.alarmTableSearchTimer) {
+            clearTimeout(this.state.alarmTableSearchTimer)
+        }
+        this.setState({
+            alarmTableSearchStringStore: event.target.value,
+            alarmTableSearchTimer: setTimeout(() => {
+                this.setState({ alarmTableSearchString: this.state.alarmTableSearchStringStore })
+            }, 300)
+        })
     }
 
     handleSearchAlarmLog = (event) => {
@@ -265,8 +332,8 @@ class AlarmHandler extends Component {
         else if (panelName === 'alarmLog') {
             this.setState({ alarmLogExpand: alarmLogExpand ? false : true })
         }
-        if (alarmLogExpand) this.setState({ alarmLogSearchString: '' })
-        if (alarmTableExpand) this.setState({ alarmTableSearchString: '' })
+        // if (alarmLogExpand) this.setState({ alarmLogSearchString: '' })
+        // if (alarmTableExpand) this.setState({ alarmTableSearchString: '' })
     }
 
     handleMoreVertClick = (event) => {
@@ -715,6 +782,13 @@ class AlarmHandler extends Component {
         this.setState({ alarmIOCPVPrefix: data["alarmIOCPVPrefix"], alarmIOCPVSuffix: data['alarmIOCPVSuffix'] })
     }
 
+    handleDbGlobal = (msg) => {
+        // console.log(JSON.parse(msg.data)[0])
+        // ["_id"]["$oid"]
+        const data = JSON.parse(msg.data)[0];
+        this.setState({ enableAllAreas: data["enableAllAreas"], enableAllAreasId: data["_id"]["$oid"] })
+    }
+
     componentDidMount() {
         // console.log('[AlarmHander] componentDidMount')
         let socket = this.context.socket;
@@ -731,7 +805,6 @@ class AlarmHandler extends Component {
         this.setState({ dbPVsURL: dbPVsURL })
 
         socket.emit('databaseBroadcastRead', { dbURL: dbPVsURL, 'clientAuthorisation': jwt }, (data) => {
-
             if (data !== "OK") {
                 console.log("ackdata", data);
             }
@@ -750,12 +823,22 @@ class AlarmHandler extends Component {
         this.setState({ dbConfigURL: dbConfigURL })
 
         socket.emit('databaseBroadcastRead', { dbURL: dbConfigURL, 'clientAuthorisation': jwt }, (data) => {
-
             if (data !== "OK") {
                 console.log("ackdata", data);
             }
         });
         socket.on('databaseData:' + dbConfigURL, this.handleDbConfig);
+
+        colName = "global"
+        const dbGlobalURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName + ":Parameters:{}"
+        this.setState({ dbGlobalURL: dbGlobalURL })
+
+        socket.emit('databaseBroadcastRead', { dbURL: dbGlobalURL, 'clientAuthorisation': jwt }, (data) => {
+            if (data !== "OK") {
+                console.log("ackdata", data);
+            }
+        });
+        socket.on('databaseData:' + dbGlobalURL, this.handleDbGlobal);
 
     }
 
@@ -771,6 +854,7 @@ class AlarmHandler extends Component {
         socket.removeListener('databaseWatchData:' + this.state.dbHistoryURL, this.handleNewDbLogReadWatchBroadcast);
         socket.removeListener('databaseData:' + this.state.dbPVsURL, this.handleNewDbPVsList);
         socket.removeListener('databaseData:' + this.state.dbConfigURL, this.handleDbConfig);
+        socket.removeListener('databaseData:' + this.state.dbGlobalURL, this.handleDbGlobal);
     }
 
     loadAlarmTable = () => {
@@ -923,12 +1007,60 @@ class AlarmHandler extends Component {
                                     <Grid
                                         container
                                         direction="row"
-                                        justify="flex-start"
-                                        alignItems="stretch"
+                                        justify="center"
+                                        alignItems="center"
                                         spacing={2}
                                     >
-                                        <Grid item xs={12}>
-                                            <div style={{ paddingTop: 8, fontSize: 16, fontWeight: 'bold' }}>ALARM AREAS</div>
+                                        <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                            <IconButton
+                                                aria-label="global_alarms"
+                                                style={{ padding: 0 }}
+                                                onClick={(event) => this.handleIconClick(event)}
+                                                onContextMenu={(event) => this.handleIconClick(event)}
+                                            >
+                                                <PublicIcon color="primary" />
+                                            </IconButton>
+                                            <Menu
+                                                keepMounted
+                                                open={this.state.globalContextOpen}
+                                                onClose={() => this.handleAlarmGlobalContextClose()}
+                                                anchorReference="anchorPosition"
+                                                anchorPosition={this.state.contextMouseY !== null && this.state.contextMouseX !== null ?
+                                                    { top: this.state.contextMouseY, left: this.state.contextMouseX } : null}
+                                            >
+                                                <MenuItem disabled>GLOBAL</MenuItem>
+                                                <hr />
+                                                {this.state.enableAllAreas ?
+                                                    <MenuItem
+                                                        onClick={() => this.handleDisableEnableGlobal(false)}
+                                                    >
+                                                        <ListItemIcon >
+                                                            <NotificationsOffIcon fontSize="small" />
+                                                        </ListItemIcon>
+                                                        <Typography variant="inherit">Disable ALL Areas</Typography>
+                                                    </MenuItem> :
+                                                    <MenuItem
+                                                        onClick={() => this.handleDisableEnableGlobal(true)}
+                                                    >
+                                                        <ListItemIcon >
+                                                            <NotificationsActiveIcon fontSize="small" />
+                                                        </ListItemIcon>
+                                                        <Typography variant="inherit">Enable ALL Areas</Typography>
+                                                    </MenuItem>
+                                                }
+                                                <MenuItem
+                                                // onClick={event => this.props.ackAllAreaAlarms(event, `${area["area"]}`)}
+                                                >
+                                                    <ListItemIcon >
+                                                        <DoneAllIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    <Typography variant="inherit">ACK ALL Areas' alarms</Typography>
+                                                </MenuItem>
+
+                                            </Menu>
+                                        </Grid>
+                                        <Grid item xs={10}>
+                                            <div style={{ paddingTop: 0, fontSize: 16, fontWeight: 'bold' }}>ALARM AREAS</div>
                                         </Grid>
                                         <Grid item xs={12}>
                                             {this.state.areaNames ?
@@ -992,6 +1124,11 @@ class AlarmHandler extends Component {
                                                             onClick={event => event.stopPropagation()}
                                                             onFocus={event => event.stopPropagation()}
                                                             onChange={event => this.handleSearchAlarmTable(event)}
+                                                            onBlur={() => this.setState({
+                                                                alarmTableSearchStringStore: '',
+                                                                alarmTableSearchString: ''
+                                                            })}
+                                                            value={this.state.alarmTableSearchStringStore}
                                                         />
                                                     </div>
                                                     : '[click to show]'
@@ -1053,6 +1190,11 @@ class AlarmHandler extends Component {
                                                             onClick={event => event.stopPropagation()}
                                                             onFocus={event => event.stopPropagation()}
                                                             onChange={event => this.handleSearchAlarmLog(event)}
+                                                            onBlur={() => this.setState({
+                                                                alarmLogSearchStringStore: '',
+                                                                alarmLogSearchString: ''
+                                                            })}
+                                                            value={this.state.alarmLogSearchStringStore}
                                                         />
                                                     </div>
                                                     : '[click to show]'
