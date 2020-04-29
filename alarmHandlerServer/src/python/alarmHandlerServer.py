@@ -278,7 +278,7 @@ def ackProcess(ackArray, timestamp):
     isSubAreaPV = int(ackArray[0]) == 3
 
     ackIdentifier = ""
-    username = ackArray[4]
+    username = ackArray[4].capitalize()
     if(username == 'None'):
         username = 'Anonymous'
 
@@ -344,9 +344,12 @@ def ackAlarm(ackIdentifier, timestamp, username):
         entry = {"timestamp": timestamp, "entry": " ".join(
             [pvname, "-", username, "acknowledged", alarmPVSevDict[alarmPVSev], "to", ackedStateDict[pvsev]])}
         client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
-            {'identifier': areaKey+'='+pvname}, {
+            {'identifier': areaKey+'*'+pvname}, {
                 '$push': {
-                    'history': entry
+                    'history': {
+                        '$each': [entry],
+                        '$position': 0
+                    }
                 }
             })
 
@@ -492,8 +495,8 @@ def processPVAlarm(pvname, value, severity, timestamp, timestamp_string, pvELN):
         alarmDict[pvname]["A"].value = 0
         # Log to history
         entry = {"timestamp": timestamp, "entry": " ".join(
-            [pvname, "-", "alarm cleared to NO_ALARM"])}
-        # print(timestamp, pvname, "alarm cleared to NO_ALARM")
+            [pvname, "-", "Alarm cleared to NO_ALARM"])}
+        # print(timestamp, pvname, "Alarm cleared to NO_ALARM")
         logToHistory = True
     elif(minorAlarm and alarmState == 3):
         # set current alarm status to MINOR_ACKED
@@ -574,9 +577,12 @@ def processPVAlarm(pvname, value, severity, timestamp, timestamp_string, pvELN):
                 })
     if(logToHistory):
         client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
-            {'identifier': areaKey+'='+pvname},
+            {'identifier': areaKey+'*'+pvname},
             {'$push': {
-                'history': entry
+                'history': {
+                    '$each': [entry],
+                    '$position': 0
+                }
             }})
 
 
@@ -766,9 +772,12 @@ def initialiseAlarmIOC():
                 alarmDict[pvname]["T"].value = lastAlarmTime
                 # Write entry to database for alarms that were active on startup
                 client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
-                    {'identifier': areaKey+'='+pvname},
+                    {'identifier': areaKey+'*'+pvname},
                     {'$push': {
-                        'history': entry
+                        'history': {
+                            '$each': [entry],
+                            '$position': 0
+                        }
                     }})
             except:
                 # set current alarm status to NO_ALARM
@@ -857,7 +866,10 @@ def pvCollectionWatch():
                         client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
                             {'identifier': topArea},
                             {'$push': {
-                                'history': entry
+                                'history': {
+                                    '$each': [entry],
+                                    '$position': 0
+                                }
                             }})
                     elif ("pvs." in key and key.endswith(".enable")):
                         # pv enable
@@ -875,13 +887,16 @@ def pvCollectionWatch():
                         # Log to history
                         msg = "ENABLED" if change[key] else "DISABLED"
                         entry = {"timestamp": timestamp, "entry": " ".join(
-                            [pvname, '-', "alarm", msg])}
+                            [pvname, '-', "Alarm", msg])}
                         # print(timestamp, pvname,
                         #       "alarm", msg)
                         client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
-                            {'identifier': areaKey+'='+pvname},
+                            {'identifier': areaKey+'*'+pvname},
                             {'$push': {
-                                'history': entry
+                                'history': {
+                                    '$each': [entry],
+                                    '$position': 0
+                                }
                             }})
                     elif (key.endswith(".enable")):
                         # subArea enable
@@ -898,7 +913,10 @@ def pvCollectionWatch():
                         client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
                             {'identifier': areaKey},
                             {'$push': {
-                                'history': entry
+                                'history': {
+                                    '$each': [entry],
+                                    '$position': 0
+                                }
                             }})
 
             except:

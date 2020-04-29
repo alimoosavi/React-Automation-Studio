@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import withStyles from '@material-ui/core/styles/withStyles';
-import { fade} from '@material-ui/core/styles';
+import { fade } from '@material-ui/core/styles';
 import AutomationStudioContext from '../SystemComponents/AutomationStudioContext';
 import RedirectToLogIn from '../SystemComponents/RedirectToLogin.js';
 import SideBar from '../SystemComponents/SideBar';
@@ -192,7 +192,7 @@ class AlarmHandler extends Component {
         else {
             this.setState({ alarmLogSelectedKey: alarmLogSelectedKey })
         }
-        console.log("update log for:", alarmLogSelectedKey)
+        // console.log("update log for:", alarmLogSelectedKey)
         let alarmLogDisplayArray = []
         const alarmLogDict = this.state.alarmLogDict
 
@@ -345,6 +345,11 @@ class AlarmHandler extends Component {
 
     handleTableItemCheck = (event, index, alarm, field, value) => {
         // console.log(index, alarm, field, value)
+
+        // to prevent re render of alarm log table?
+        // not really necessary from a performance point of view
+        // event.preventDefault()
+        // event.stopPropagation()
 
         let socket = this.context.socket;
         let jwt = JSON.parse(localStorage.getItem('jwt'));
@@ -678,40 +683,17 @@ class AlarmHandler extends Component {
             this.setState({ dbWatchId: msg.dbWatchId })
         }
     }
+    
     handleNewDbLogReadWatchBroadcast = (msg) => {
         const data = JSON.parse(msg.data);
-        console.log(data)
-        // const alarmLogDict = {}
-        // data.map((area, index) => {
-        //     alarmLogDict[`${area["area"]}`] = area["history"]
-        //     // Map alarms in area
-        //     Object.keys(area["pvs"]).map(alarmKey => {
-        //         alarmLogDict[`${area["area"]}*${area["pvs"][alarmKey]["name"]}`] = area["pvs"][alarmKey]["history"]
-        //     })
-        //     // Map subAreas
-        //     Object.keys(area).map(areaKey => {
-        //         if (areaKey.includes("subArea")) {
-        //             alarmLogDict[`${area["area"]}=${area[areaKey]["name"]}`] = area[areaKey]["history"]
-        //             // Map alarms in subarea
-        //             Object.keys(area[areaKey]["pvs"]).map(alarmKey => {
-        //                 alarmLogDict[`${area["area"]}=${area[areaKey]["name"]}*${area[areaKey]["pvs"][alarmKey]["name"]}`] = area[areaKey]["pvs"][alarmKey]["history"]
-        //             })
-        //         }
-        //     })
-
-        // })
-
-        // const oldAlarmLogDict = this.state.alarmLogDict
-        // this.setState({ alarmLogDict: alarmLogDict })
-
-        // if (!isEmpty(oldAlarmLogDict)) {
-        //     if (oldAlarmLogDict[this.state.alarmLogSelectedKey].length !== alarmLogDict[this.state.alarmLogSelectedKey].length) {
-        //         this.handleUpdateLogDisplayData()
-        //     }
-        // }
-        // else {
-        //     this.handleUpdateLogDisplayData()
-        // }
+        // console.log(data)
+        const alarmLogDict = {}
+        data.map((area, index) => {
+            alarmLogDict[area["identifier"]] = area["history"]
+        })
+        // console.log("history watch")
+        this.setState({ alarmLogDict: alarmLogDict })
+        this.handleUpdateLogDisplayData()
     }
 
     handleDbConfig = (msg) => {
@@ -1068,6 +1050,7 @@ class AlarmHandler extends Component {
                                         <AlarmLog
                                             height={alarmLogHeight}
                                             alarmLogDisplayArray={this.state.alarmLogDisplayArray}
+                                            alarmLogSelectedKey={this.state.alarmLogSelectedKey}
                                         />
                                     </ExpansionPanelDetails>
                                 </ExpansionPanel>
