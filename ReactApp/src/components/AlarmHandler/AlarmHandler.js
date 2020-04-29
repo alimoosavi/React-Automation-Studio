@@ -115,6 +115,10 @@ class AlarmHandler extends Component {
         this.alarmPVDict = {}
         this.areaPVDict = {}
         this.state = {
+            alarmLogSearchString: '',
+            alarmLogSearchStringStore: '',
+            alarmLogSearchTimer: null,
+            alarmTableSearchString: '',
             alarmLogSelectedKey: null,
             alarmLogDict: {},
             alarmLogDisplayArray: [],
@@ -177,11 +181,19 @@ class AlarmHandler extends Component {
     }
 
     handleSearchAlarmTable = (event) => {
-        window.confirm('Still to be done...')
+        this.setState({ alarmTableSearchString: event.target.value })
     }
 
     handleSearchAlarmLog = (event) => {
-        window.confirm('Still to be done...')
+        if (this.state.alarmLogSearchTimer) {
+            clearTimeout(this.state.alarmLogSearchTimer)
+        }
+        this.setState({
+            alarmLogSearchStringStore: event.target.value,
+            alarmLogSearchTimer: setTimeout(() => {
+                this.setState({ alarmLogSearchString: this.state.alarmLogSearchStringStore })
+            }, 300)
+        })
     }
 
     handleUpdateLogDisplayData = (alarmLogSelectedKey = null) => {
@@ -253,6 +265,8 @@ class AlarmHandler extends Component {
         else if (panelName === 'alarmLog') {
             this.setState({ alarmLogExpand: alarmLogExpand ? false : true })
         }
+        if (alarmLogExpand) this.setState({ alarmLogSearchString: '' })
+        if (alarmTableExpand) this.setState({ alarmTableSearchString: '' })
     }
 
     handleMoreVertClick = (event) => {
@@ -683,7 +697,7 @@ class AlarmHandler extends Component {
             this.setState({ dbWatchId: msg.dbWatchId })
         }
     }
-    
+
     handleNewDbLogReadWatchBroadcast = (msg) => {
         const data = JSON.parse(msg.data);
         // console.log(data)
@@ -839,7 +853,7 @@ class AlarmHandler extends Component {
         }
 
         let alarmTableHeight = '40vh'
-        let alarmLogHeight = '30vh'
+        let alarmLogHeight = '29vh'
         if (this.state.alarmTableExpand && !this.state.alarmLogExpand && !this.state.alarmLogIsExpanded) {
             alarmTableHeight = '75vh'
         }
@@ -1003,6 +1017,7 @@ class AlarmHandler extends Component {
                                                 tableItemRightClick={this.handleTableItemRightClick}
                                                 height={alarmTableHeight}
                                                 tableRowClick={this.handleTableRowClick}
+                                                alarmTableSearchString={this.state.alarmTableSearchString}
                                             />
                                             : "No data from database"}
                                     </ExpansionPanelDetails>
@@ -1051,6 +1066,7 @@ class AlarmHandler extends Component {
                                             height={alarmLogHeight}
                                             alarmLogDisplayArray={this.state.alarmLogDisplayArray}
                                             alarmLogSelectedKey={this.state.alarmLogSelectedKey}
+                                            alarmLogSearchString={this.state.alarmLogSearchString}
                                         />
                                     </ExpansionPanelDetails>
                                 </ExpansionPanel>

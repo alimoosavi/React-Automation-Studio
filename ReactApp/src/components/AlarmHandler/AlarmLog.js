@@ -30,19 +30,25 @@ class AlarmLog extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const update = this.props.height !== nextProps.height || this.props.alarmLogDisplayArray.length !== nextProps.alarmLogDisplayArray.length || this.props.alarmLogSelectedKey !== nextProps.alarmLogSelectedKey
+        const update = this.props.height !== nextProps.height
+            || this.props.alarmLogDisplayArray.length !== nextProps.alarmLogDisplayArray.length
+            || this.props.alarmLogSelectedKey !== nextProps.alarmLogSelectedKey
+            || this.props.alarmLogSearchString !== nextProps.alarmLogSearchString
         return update
     }
 
     render() {
-        // console.log(this.props.alarmLogDisplayArray.length)
+        // console.log(this.props.alarmLogSearchString)
         const logData = this.props.alarmLogDisplayArray.map((entry) => {
-            // console.log(entry)
             const date = new Date(entry.timestamp * 1000)
+            const content = `${date.toLocaleString()}: ${entry.entry}`
+            const visible = content.toLowerCase().includes(this.props.alarmLogSearchString.toLowerCase())
             return (
-                <TableRow hover key={`${entry.timestamp}-${entry.entry}`}>
-                    <TableCell>{`${date.toLocaleString()}: ${entry.entry}`}</TableCell>
-                </TableRow>
+                visible
+                    ? <TableRow hover key={`${entry.timestamp}-${entry.entry}`}>
+                        <TableCell>{content}</TableCell>
+                    </TableRow>
+                    : null
             )
         })
 
