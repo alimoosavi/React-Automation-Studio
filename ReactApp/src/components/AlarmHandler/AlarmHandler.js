@@ -129,7 +129,7 @@ class AlarmHandler extends Component {
             alarmTableSearchString: '',
             alarmTableSearchStringStore: '',
             alarmTableSearchTimer: null,
-            alarmLogSelectedKey: null,
+            alarmLogSelectedKey: '',
             alarmLogDict: {},
             alarmLogDisplayArray: [],
             dbHistoryURL: '',
@@ -189,6 +189,17 @@ class AlarmHandler extends Component {
 
     handleDoNothing = () => {
 
+    }
+
+    handleGlobalArea = () => {
+        const areaSubAreaOpen = {
+            ...this.state.areaSubAreaOpen,
+        }
+        areaSubAreaOpen[this.state.areaSelectedIndex.split('=')[0]] = false   // set previous area to false
+
+        this.setState({ areaSelectedIndex: 'ALLAREAS', alarmLogSelectedKey: 'ALLAREAS', areaSelectedName: 'ALL AREAS', alarmLogSelectedName: 'ALL AREAS' })
+        this.setState({ areaSubAreaOpen: areaSubAreaOpen })
+        this.handleUpdateLogDisplayData('ALLAREAS')
     }
 
     handleDisableEnableGlobal = (value) => {
@@ -264,8 +275,10 @@ class AlarmHandler extends Component {
     }
 
     handleUpdateLogDisplayData = (alarmLogSelectedKey = null) => {
+        // console.log('alarmLogSelectedKey', alarmLogSelectedKey)
         if (!alarmLogSelectedKey) {
             // no selector passed
+            // console.log('no selector passed')
             alarmLogSelectedKey = this.state.alarmLogSelectedKey
         }
         else {
@@ -274,6 +287,8 @@ class AlarmHandler extends Component {
         // console.log("update log for:", alarmLogSelectedKey)
         let alarmLogDisplayArray = []
         const alarmLogDict = this.state.alarmLogDict
+        // console.log(alarmLogSelectedKey)
+        // console.log(alarmLogDict)
 
         const isPV = alarmLogSelectedKey.includes('*')
         const isSubArea = alarmLogSelectedKey.includes('=') && !isPV
@@ -283,7 +298,10 @@ class AlarmHandler extends Component {
         // Map alarmLogDict
         Object.keys(alarmLogDict).map(key => {
             // console.log(key)
-            if (isPV) {
+            if (alarmLogSelectedKey === 'ALLAREAS') {
+                alarmLogDisplayArray = alarmLogDisplayArray.concat(alarmLogDict[key])
+            }
+            else if (isPV) {
                 if (key === alarmLogSelectedKey) {
                     alarmLogDisplayArray = alarmLogDisplayArray.concat(alarmLogDict[key])
                 }
@@ -296,7 +314,7 @@ class AlarmHandler extends Component {
             }
             else {
                 let areaKey = key.split('*')[0]
-                areaKey = key.split('=')[0]
+                areaKey = areaKey.split('=')[0]
                 if (areaKey === alarmLogSelectedKey) {
                     alarmLogDisplayArray = alarmLogDisplayArray.concat(alarmLogDict[key])
                 }
@@ -607,6 +625,9 @@ class AlarmHandler extends Component {
         }
 
         let areaSelectedName = index.split('=')
+        // console.log('areaSelectedName', areaSelectedName)
+        // console.log('index', index)
+        // console.log('this.state.areaSelectedIndex', this.state.areaSelectedIndex)
         if (areaSelectedName.length > 1) {                  // selected area is a subArea
             areaSelectedName = areaSelectedName[0] + " > " + areaSelectedName[1]
         }
@@ -614,11 +635,8 @@ class AlarmHandler extends Component {
             if (index === this.state.areaSelectedIndex) {   // selected same area twice
                 areaSubAreaOpen[index] = !this.state.areaSubAreaOpen[index]
             }
-            else if (areaSelectedName[0] === this.state.areaSelectedIndex.split('=')[0]) {    // selected area of subArea
-                areaSubAreaOpen[index] = true
-            }
             else {                                           // selected a different area
-                areaSubAreaOpen[this.state.areaSelectedIndex] = false   // set previous area to false
+                areaSubAreaOpen[this.state.areaSelectedIndex.split('=')[0]] = false   // set previous area to false
                 areaSubAreaOpen[index] = true                           // set current area to true
             }
         }
@@ -650,13 +668,13 @@ class AlarmHandler extends Component {
 
             data.map((area, index) => {
                 areaContextOpen[area["area"]] = false
-                if (index === 0) {
-                    // Open first area on start up or refresh page
-                    areaSubAreaOpen[area["area"]] = true
-                }
-                else {
-                    areaSubAreaOpen[area["area"]] = false
-                }
+                // if (index === 0) {
+                //     // Open first area on start up or refresh page
+                //     areaSubAreaOpen[area["area"]] = true
+                // }
+                // else {
+                areaSubAreaOpen[area["area"]] = false
+                // }
                 areaMongoId[area["area"]] = area["_id"]["$oid"]
                 // Map alarms in area
                 Object.keys(area["pvs"]).map(alarmKey => {
@@ -690,10 +708,12 @@ class AlarmHandler extends Component {
             })
             if (!this.state.areaSelectedIndex) {
                 // console.log("First mount update selection")
-                const areaSelectedIndex = areaNames[0]["area"]
-                const areaSelectedName = areaNames[0]["area"]
+                // const areaSelectedIndex = areaNames[0]["area"]
+                // const areaSelectedName = areaNames[0]["area"]
+                const areaSelectedIndex = 'ALLAREAS'
+                const areaSelectedName = 'ALL AREAS'
                 this.setState({ areaSubAreaOpen: areaSubAreaOpen, areaSelectedIndex: areaSelectedIndex, areaSelectedName: areaSelectedName, alarmLogSelectedName: areaSelectedName })
-                this.setState({ alarmLogSelectedKey: areaSelectedIndex })
+                this.setState({ alarmLogSelectedKey: 'ALLAREAS' })
             }
             // console.log(lastAlarm)
             this.setState({ lastAlarm })
@@ -1015,10 +1035,12 @@ class AlarmHandler extends Component {
                                             <IconButton
                                                 aria-label="global_alarms"
                                                 style={{ padding: 0 }}
-                                                onClick={(event) => this.handleIconClick(event)}
+                                                onClick={() => this.handleGlobalArea()}
                                                 onContextMenu={(event) => this.handleIconClick(event)}
                                             >
-                                                <PublicIcon color="primary" />
+                                                {this.state.areaSelectedIndex === 'ALLAREAS'
+                                                    ? <PublicIcon color="primary" />
+                                                    : <PublicIcon />}
                                             </IconButton>
                                             <Menu
                                                 keepMounted
@@ -1037,7 +1059,7 @@ class AlarmHandler extends Component {
                                                         <ListItemIcon >
                                                             <NotificationsOffIcon fontSize="small" />
                                                         </ListItemIcon>
-                                                        <Typography variant="inherit">Disable ALL Areas</Typography>
+                                                        <Typography variant="inherit">Disable ALLAREAS</Typography>
                                                     </MenuItem> :
                                                     <MenuItem
                                                         onClick={() => this.handleDisableEnableGlobal(true)}
@@ -1045,7 +1067,7 @@ class AlarmHandler extends Component {
                                                         <ListItemIcon >
                                                             <NotificationsActiveIcon fontSize="small" />
                                                         </ListItemIcon>
-                                                        <Typography variant="inherit">Enable ALL Areas</Typography>
+                                                        <Typography variant="inherit">Enable ALLAREAS</Typography>
                                                     </MenuItem>
                                                 }
                                                 <MenuItem
@@ -1054,7 +1076,7 @@ class AlarmHandler extends Component {
                                                     <ListItemIcon >
                                                         <DoneAllIcon fontSize="small" />
                                                     </ListItemIcon>
-                                                    <Typography variant="inherit">ACK ALL Areas' alarms</Typography>
+                                                    <Typography variant="inherit">ACK ALLAREAS' alarms</Typography>
                                                 </MenuItem>
 
                                             </Menu>

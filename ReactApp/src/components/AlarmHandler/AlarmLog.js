@@ -26,6 +26,7 @@ const styles = theme => ({
 class AlarmLog extends Component {
     constructor(props) {
         super(props);
+        this.myRef = React.createRef()
         this.state = {}
     }
 
@@ -35,6 +36,13 @@ class AlarmLog extends Component {
             || this.props.alarmLogSelectedKey !== nextProps.alarmLogSelectedKey
             || this.props.alarmLogSearchString !== nextProps.alarmLogSearchString
         return update
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.alarmLogDisplayArray.length !== this.props.alarmLogDisplayArray.length) {
+            // reset scroll only if new area selected
+            this.myRef.current.scrollTo(0, 0)
+        }
     }
 
     render() {
@@ -53,7 +61,7 @@ class AlarmLog extends Component {
         })
 
         return (
-            <TableContainer style={{ height: this.props.height, overflow: 'auto' }}>
+            <TableContainer style={{ height: this.props.height, overflow: 'auto' }} ref={this.myRef}>
                 <Table aria-label="Log Table" size="small" >
                     <TableBody>
                         {logData}

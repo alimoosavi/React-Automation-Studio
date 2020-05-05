@@ -53,6 +53,7 @@ const styles = theme => ({
 class AlarmTable extends Component {
     constructor(props) {
         super(props);
+        this.myRef = React.createRef()
         this.state = {}
     }
 
@@ -60,6 +61,13 @@ class AlarmTable extends Component {
         const update = this.props.alarmPVDict === nextProps.alarmPVDict
         // console.log("shouldComponentUpdate", update)
         return update
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.areaSelectedIndex !== this.props.areaSelectedIndex) {
+            // reset scroll only if new area selected
+            this.myRef.current.scrollTo(0, 0)
+        }
     }
 
     render() {
@@ -75,6 +83,8 @@ class AlarmTable extends Component {
         const isTopArea = !areaSelectedIndex.includes("=")
         let currSubArea = ""
         let newSubArea = false
+        let currTopArea = ""
+        let newTopArea = false
 
         let textFieldClasses = {
             majorAlarm: classes.TextFieldSeverityDisabled,
@@ -84,7 +94,7 @@ class AlarmTable extends Component {
         };
 
         return (
-            <TableContainer component={Paper} style={{ height: this.props.height }}>
+            <TableContainer component={Paper} style={{ height: this.props.height }} ref={this.myRef}>
                 <Table aria-label="Alarm Table" stickyHeader size="small">
                     <TableHead>
                         <TableRow>
@@ -109,7 +119,7 @@ class AlarmTable extends Component {
                             if (isTopArea) {                                    // areaSelectedIndex is area
                                 areaKey = areaKey.split('=')[0]                 // areaKey is area
                             }
-                            if (areaKey == areaSelectedIndex) {
+                            if (areaKey == areaSelectedIndex || areaSelectedIndex === 'ALLAREAS') {
                                 // console.log('pva://' + "alarmIOC:" + areaAlarms[areaAlarmName]["name"] + "V")
                                 const areaAlarmNameArray = areaAlarmName.split('=')
                                 let areaName = null
@@ -117,6 +127,7 @@ class AlarmTable extends Component {
                                 if (areaAlarmNameArray.length > 2) {
                                     areaName = areaAlarmNameArray[0] + "=" + areaAlarmNameArray[1]
                                     alarm = areaAlarmNameArray[2]
+                                    newTopArea = false
                                     newSubArea = currSubArea !== areaName
                                     currSubArea = areaName
                                 }
@@ -124,12 +135,38 @@ class AlarmTable extends Component {
                                     areaName = areaAlarmNameArray[0]
                                     alarm = areaAlarmNameArray[1]
                                     newSubArea = false
+                                    newTopArea = currTopArea !== areaName
+                                    currTopArea = areaName
                                 }
                                 // console.log(areaName, newSubArea)
                                 const visible = areaAlarms[areaAlarmName]["name"].toLowerCase().includes(this.props.alarmTableSearchString.toLowerCase())
                                 return (
                                     visible
                                         ? <React.Fragment key={areaAlarmName}>
+                                            {newTopArea && this.props.alarmTableSearchString.length === 0
+                                                ? <TableRow>
+                                                    <TableCell
+                                                        align="left"
+                                                        style={{
+                                                            paddingTop: 20,
+                                                            fontWeight: 'bold',
+                                                            borderBottom: 'double'
+                                                        }}
+                                                    >
+                                                        {`${areaName.split('=')[0]}`}
+                                                    </TableCell>
+                                                    <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                    <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                    <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                    <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                    <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                    <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                    <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                    {this.props.debug
+                                                        ? <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                        : null}
+                                                </TableRow>
+                                                : null}
                                             {isTopArea && newSubArea && this.props.alarmTableSearchString.length === 0
                                                 ? <TableRow>
                                                     <TableCell
