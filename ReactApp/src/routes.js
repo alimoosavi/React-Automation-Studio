@@ -13,6 +13,7 @@ import Main from './Main';
 import ControlTestHarp1 from './components/ControlScreens/ControlTestHarp1';
 
 import AlarmHandler from './components/AlarmHandler/AlarmHandler';
+import Vault from './components/AlarmHandler/Vault';
 
 import ControlTableExample from './components/ControlScreens/ControlTableExample';
 import ComponentsWithMultiplePVs from './components/Examples/ComponentsWithMultiplePVs';
@@ -64,6 +65,7 @@ export default props=>(
     <Route path="/Example3" component={Example3} />
 
     <Route path="/AlarmHandlerDemo" component={AlarmHandler} />
+    <Route path="/VaultDemo" component={Vault} />
 
 
 
