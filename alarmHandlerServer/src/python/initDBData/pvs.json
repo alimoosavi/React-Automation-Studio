@@ -229,27 +229,7 @@
     {
         "area": "BUILDING DEMO",
         "enable": true,
-        "pvs": {
-            "pv0": {
-                "name": "$(DEMO_ALARMS_IOC):BUILDING-pv0",
-                "enable": true,
-                "latch": true,
-                "notify": true,
-                "lastAlarmVal": "",
-                "lastAlarmTime": "",
-                "lastAlarmAckTime": ""
-
-            },
-            "pv1": {
-                "name": "$(DEMO_ALARMS_IOC):BUILDING-pv1",
-                "enable": true,
-                "latch": true,
-                "notify": true,
-                "lastAlarmVal": "",
-                "lastAlarmTime": "",
-                "lastAlarmAckTime": ""
-            }
-        },
+        "pvs": {},
         "subArea0": {
             "name": "FIRE",
             "enable": true,
@@ -345,11 +325,11 @@
             }
         },
         "subArea1": {
-            "name": "CROOM",
+            "name": "RF",
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-CROOM-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-RF-pv0",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -359,7 +339,7 @@
 
                 },
                 "pv1": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-CROOM-pv1",
+                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-RF-pv1",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -368,7 +348,7 @@
                     "lastAlarmAckTime": ""
                 },
                 "pv2": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-CROOM-pv2",
+                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-RF-pv2",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -444,15 +424,6 @@
             "pvs": {
                 "pv0": {
                     "name": "$(DEMO_ALARMS_IOC):VAULT-ARMS-pv0",
-                    "enable": true,
-                    "latch": true,
-                    "notify": true,
-                    "lastAlarmVal": "",
-                    "lastAlarmTime": "",
-                    "lastAlarmAckTime": ""
-                },
-                "pv1": {
-                    "name": "$(DEMO_ALARMS_IOC):VAULT-ARMS-pv1",
                     "enable": true,
                     "latch": true,
                     "notify": true,

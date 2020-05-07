@@ -1,49 +1,70 @@
 import React, { Component } from 'react';
 
+import Grid from '@material-ui/core/Grid';
+import withStyles from '@material-ui/core/styles/withStyles';
+
+import SideBar from '../SystemComponents/SideBar';
 import Door from './SVG Components/Door'
 import Floor from './SVG Components/Floor'
 
+// Styles
+const styles = theme => ({
+    root: {
+        padding: theme.spacing(1),
+        // paddingLeft: theme.spacing(8),
+        overflowX: "hidden",
+        overflowY: "hidden",
+        paddingTop: 0,
+        width: '100%'
+    },
+    card: {
+        padding: theme.spacing(2),
+        height: "100%",
+        overflowX: "default",
+        overflowY: "default",
+    },
+})
+
+
 class Vault extends Component {
     state = {
-        doors: {
-            "Door1": true,
-            "Door2": true,
-        }
     }
 
-    handleDoorClick = (id, open) => {
-        console.log('door clicked')
-        let doors = { ...this.state.doors }
-        doors[id] = !open
-        this.setState({ doors: doors })
+    logout = () => {
+        localStorage.removeItem('jwt');
     }
 
     render() {
+        const { classes } = this.props;
         return (
-            <svg
-                width='100%'
-                height='100%'
-                viewBox='0 0 1800 900'
-            >
-                <Door
-                    id="Door1"
-                    open={this.state.doors["Door1"]}
-                    dx={100}
-                    dy={100}
-                    clicked={this.handleDoorClick}
-                />
-                <Door
-                    id="Door2"
-                    open={this.state.doors["Door2"]}
-                    dx={200}
-                    dy={200}
-                    clicked={this.handleDoorClick}
-                />
-                <Floor />
-            </svg>
+            <React.Fragment>
+                <SideBar />
+                <Grid
+                    container
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="stretch"
+                    spacing={2}
+                    className={classes.root}
+                >
+                    <Grid item xs={6} style={{ textAlign: 'center' }}>
+                        <svg
+                            width='100%'
+                            height='100%'
+                            viewBox='0 0 1100 900'
+                        >
+                            <Floor />
+                        </svg>
+                    </Grid>
+                    <Grid item xs={6}>
+                        
+                    </Grid>
+                </Grid>
+
+            </React.Fragment>
 
         );
     }
 }
 
-export default Vault;
+export default withStyles(styles, { withTheme: true })(Vault);

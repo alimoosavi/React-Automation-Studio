@@ -10,7 +10,7 @@ file "db/dbDemoAlarm.db" {
     { area = BUILDING-SECURITY  }
     { area = CYCLOTRON          }
     { area = CYCLOTRON-AIR      }
-    { area = CYCLOTRON-CROOM    }
+    { area = CYCLOTRON-RF    }
     { area = CYCLOTRON-SAFETY   }
     { area = CYCLOTRON-VACUUM   }
     { area = CYCLOTRON-WATER    }
