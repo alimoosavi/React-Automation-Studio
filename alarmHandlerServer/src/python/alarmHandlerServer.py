@@ -618,7 +618,9 @@ def replaceAllInFile(filename, original, replacedWith):
 
 def startDemoIOC(runDemoIOC):
     if (runDemoIOC):
-        replaceAllInFile("/epics/demoAlarmsIOC/db/dbDemoAlarm.db", '$(ioc)',
+        # replaceAllInFile("/epics/demoAlarmsIOC/db/dbDemoAlarm.db", '$(ioc)',
+        #                  DEMO_ALARMS_IOC)
+        replaceAllInFile("/epics/demoAlarmsIOC/db/demoAlarms.db", '$(ioc)',
                          DEMO_ALARMS_IOC)
         print("Running demo alarms IOC")
         subprocess.call("./startDemoIOC.cmd", shell=True)

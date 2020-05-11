@@ -235,7 +235,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):BUILDING-FIRE-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):building_fire",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -250,7 +250,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):BUILDING-HVAC-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):building_airtemp",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -260,7 +260,7 @@
 
                 },
                 "pv1": {
-                    "name": "$(DEMO_ALARMS_IOC):BUILDING-HVAC-pv1",
+                    "name": "$(DEMO_ALARMS_IOC):building_airhumidity",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -269,7 +269,7 @@
                     "lastAlarmAckTime": ""
                 },
                 "pv2": {
-                    "name": "$(DEMO_ALARMS_IOC):BUILDING-HVAC-pv2",
+                    "name": "$(DEMO_ALARMS_IOC):building_airpressure_diff",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -284,7 +284,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):BUILDING-SECURITY-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):building_security",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -300,7 +300,7 @@
         "enable": true,
         "pvs": {
             "pv0": {
-                "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-pv0",
+                "name": "$(DEMO_ALARMS_IOC):cyclotron_interlocks",
                 "enable": true,
                 "latch": true,
                 "notify": true,
@@ -314,7 +314,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-AIR-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_airpressure",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -329,7 +329,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-RF-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_RF1",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -339,7 +339,7 @@
 
                 },
                 "pv1": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-RF-pv1",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_RF2",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -348,7 +348,7 @@
                     "lastAlarmAckTime": ""
                 },
                 "pv2": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-RF-pv2",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_RF_pickup",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -363,7 +363,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-SAFETY-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_safety",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -378,7 +378,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-VACUUM-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_vacuum",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -393,7 +393,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-WATER-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_water_flow",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -403,7 +403,7 @@
 
                 },
                 "pv1": {
-                    "name": "$(DEMO_ALARMS_IOC):CYCLOTRON-WATER-pv1",
+                    "name": "$(DEMO_ALARMS_IOC):cyclotron_water_temp",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -423,7 +423,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):VAULT-ARMS-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):vault_radiation",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -438,7 +438,7 @@
             "enable": true,
             "pvs": {
                 "pv0": {
-                    "name": "$(DEMO_ALARMS_IOC):VAULT-CLEARANCE-pv0",
+                    "name": "$(DEMO_ALARMS_IOC):vault_door",
                     "enable": true,
                     "latch": true,
                     "notify": true,
@@ -447,7 +447,7 @@
                     "lastAlarmAckTime": ""
                 },
                 "pv1": {
-                    "name": "$(DEMO_ALARMS_IOC):VAULT-CLEARANCE-pv1",
+                    "name": "$(DEMO_ALARMS_IOC):vault_clear",
                     "enable": true,
                     "latch": true,
                     "notify": true,

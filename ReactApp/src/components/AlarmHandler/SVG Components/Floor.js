@@ -10,6 +10,20 @@ const Floor = (props) => {
     return (
         <g transform='translate(30,30)'>
             <defs id='defs8232'>
+                <linearGradient id='linearGradient6075'>
+                    <stop
+                        id='stop6071'
+                        offset='0'
+                        stopColor='#000'
+                        stopOpacity='1'
+                    ></stop>
+                    <stop
+                        id='stop6073'
+                        offset='1'
+                        stopColor='#000'
+                        stopOpacity='0'
+                    ></stop>
+                </linearGradient>
                 <linearGradient id='linearGradient2630'>
                     <stop
                         id='stop2626'
@@ -435,6 +449,15 @@ const Floor = (props) => {
                     y2='618.832'
                     gradientUnits='userSpaceOnUse'
                     xlinkHref='#linearGradient2630'
+                ></linearGradient>
+                <linearGradient
+                    id='linearGradient6077'
+                    x1='70.913'
+                    x2='148.074'
+                    y1='33.451'
+                    y2='33.451'
+                    gradientUnits='userSpaceOnUse'
+                    xlinkHref='#linearGradient6075'
                 ></linearGradient>
             </defs>
             <path
@@ -1779,14 +1802,14 @@ const Floor = (props) => {
             ></path>
             <g
                 id='security'
-                fill='#000'
+                fill='#55d400'
                 fillOpacity='1'
-                transform='matrix(.02498 0 0 .02675 164.154 163.746)'
+                transform='matrix(.02498 0 0 .02675 200.88 60.582)'
             >
-                <g id='g3039' fill='#000' fillOpacity='1'>
+                <g id='g3039' fill='#55d400' fillOpacity='1'>
                     <path
                         id='path3037'
-                        fill='#000'
+                        fill='#55d400'
                         fillOpacity='1'
                         d='M794 10H206C98.2 10 10 98.2 10 206v588c0 107.8 88.2 196 196 196h588c107.8 0 196-88.2 196-196V206c0-107.8-88.2-196-196-196zM590.4 132.5l131.8 34-10.6 99.9H469.1l-10.6-99.9zm127.9 192.7c0 70.7-57.2 127.8-127.8 127.8H590.2c-70.5 0-127.7-57.2-127.7-127.8 0-13.7 2.8-26.7 6.7-39h242.6c3.8 12.3 6.5 25.2 6.5 39zm31.6 542.3l-18.2-188-5.9 188H455.1s-4.1-215.2-4.5-220.6l-225 207.6c-7.2 7.2-16.7 10.8-26.2 10.8-9.4 0-18.9-3.6-26.1-10.8-14.5-14.4-14.5-37.8 0-52.3 0 0 236.5-284.2 300.3-304.3 36.8-11.6 61.3-14.9 104.6-14.9h24.6C722 483 770.6 522 802 586.1c9.2 18.9 24.3 164.2 35.5 281.5h-87.6zm-74.7-367.2c20.3 4.1 37.2 10.3 51.5 18L532.5 865.8h-61.6z'
                     ></path>
@@ -1794,11 +1817,11 @@ const Floor = (props) => {
             </g>
             <g
                 id='airtemp'
-                fill='#000'
+                fill='#55d400'
                 fillOpacity='1'
-                transform='matrix(.05472 0 0 .05532 61.809 164.014)'
+                transform='matrix(.05472 0 0 .05532 29.142 20.551)'
             >
-                <g id='g3163' fill='#000' fillOpacity='1'>
+                <g id='g3163' fill='#55d400' fillOpacity='1'>
                     <path
                         id='path3159'
                         d='M382.485 299.556V59.678C382.486 26.771 355.714 0 322.808 0h-30.626c-32.906 0-59.678 26.771-59.678 59.677V236.65c-2.163.463-4.216.7-6.185.7-3.614 0-7.496-.769-11.87-2.35-4.77-1.724-9.854-4.324-15.239-7.077-5.975-3.054-12.153-6.213-18.697-8.579-7.699-2.783-14.917-4.135-22.067-4.135-7.151 0-14.369 1.353-22.068 4.136-6.543 2.366-12.722 5.524-18.697 8.579-5.384 2.752-10.469 5.353-15.24 7.077-4.372 1.581-8.254 2.349-11.868 2.349-3.614 0-7.497-.769-11.869-2.349-7.792-2.816-16.391 1.215-19.207 9.006-2.816 7.791 1.216 16.39 9.006 19.207 7.699 2.783 14.917 4.136 22.069 4.136 7.151 0 14.37-1.353 22.067-4.136 6.546-2.366 12.724-5.524 18.697-8.579 5.386-2.753 10.472-5.354 15.24-7.078 4.373-1.58 8.255-2.349 11.869-2.349 3.614 0 7.497.769 11.868 2.349 4.769 1.724 9.855 4.324 15.241 7.077 5.974 3.055 12.151 6.213 18.696 8.579 7.699 2.783 14.917 4.136 22.068 4.136 2.052 0 4.112-.125 6.185-.349v32.557a100.55 100.55 0 00-9.553 12.643c-2.647-.327-5.453-1.025-8.501-2.128-4.77-1.724-9.854-4.324-15.239-7.077-5.975-3.054-12.153-6.213-18.697-8.579-7.699-2.783-14.917-4.135-22.067-4.135-7.151 0-14.369 1.353-22.068 4.136-6.543 2.366-12.722 5.524-18.697 8.579-5.384 2.752-10.469 5.353-15.24 7.077-4.371 1.581-8.253 2.349-11.868 2.349s-7.498-.768-11.869-2.349c-7.792-2.816-16.391 1.215-19.207 9.006-2.816 7.791 1.216 16.39 9.006 19.207 7.698 2.783 14.917 4.136 22.069 4.136 7.152 0 14.371-1.353 22.067-4.135 6.546-2.366 12.724-5.524 18.697-8.579 5.386-2.753 10.472-5.354 15.24-7.078 4.373-1.58 8.255-2.349 11.869-2.349 3.614 0 7.497.769 11.868 2.349 4.769 1.724 9.855 4.324 15.241 7.077 5.974 3.055 12.151 6.213 18.696 8.579a76.883 76.883 0 006.352 1.989 100.84 100.84 0 00-3.356 25.818c0 5.629.466 11.184 1.368 16.624-3.024-1.39-6.159-2.99-9.404-4.649-5.973-3.054-12.149-6.211-18.697-8.579-7.699-2.783-14.917-4.135-22.067-4.135-7.151 0-14.369 1.353-22.068 4.136-6.547 2.367-12.723 5.524-18.697 8.579-5.384 2.752-10.47 5.353-15.239 7.077-4.373 1.581-8.255 2.349-11.869 2.349-3.614 0-7.497-.769-11.87-2.349-7.79-2.817-16.39 1.217-19.206 9.008-2.816 7.791 1.217 16.39 9.008 19.206 7.699 2.783 14.917 4.135 22.067 4.135s14.368-1.353 22.068-4.136c6.545-2.367 12.723-5.525 18.696-8.579 5.384-2.752 10.469-5.352 15.24-7.077 4.373-1.58 8.255-2.349 11.869-2.349 3.614 0 7.497.769 11.868 2.349 4.772 1.725 9.857 4.325 15.241 7.077 5.974 3.054 12.151 6.212 18.698 8.58 5.883 2.126 11.484 3.411 16.99 3.902a100.965 100.965 0 0015.864 20.212c18.911 18.65 43.85 28.869 70.372 28.868.478 0 .961-.003 1.439-.01 26.064-.363 50.66-10.766 69.257-29.292 18.599-18.527 29.094-43.084 29.553-69.146.449-25.481-8.472-49.507-25.242-68.338zm-145.239 66.538c0-18.89 7.392-36.615 20.813-49.91a15 15 0 004.444-10.657V59.677c0-16.364 13.313-29.677 29.678-29.677h30.626c16.364 0 29.678 13.313 29.678 29.677v245.85a15 15 0 004.444 10.657c13.756 13.626 21.144 31.803 20.803 51.183-.661 37.507-31.718 68.447-69.232 68.969-18.943.258-36.838-6.917-50.329-20.221-13.493-13.308-20.925-31.072-20.925-50.021z'
@@ -1811,16 +1834,16 @@ const Floor = (props) => {
             </g>
             <g
                 id='fire'
-                fill='#000'
+                fill='#55d400'
                 fillOpacity='1'
-                transform='matrix(.0332 0 0 .0344 26.195 164.014)'
+                transform='matrix(.0332 0 0 .0344 199.684 20.495)'
             >
-                <g id='g3333' fill='#000' fillOpacity='1'>
-                    <g id='_x37__15_' fill='#000' fillOpacity='1'>
-                        <g id='g3330' fill='#000' fillOpacity='1'>
+                <g id='g3333' fill='#55d400' fillOpacity='1'>
+                    <g id='_x37__15_' fill='#55d400' fillOpacity='1'>
+                        <g id='g3330' fill='#55d400' fillOpacity='1'>
                             <path
                                 id='path3328'
-                                fill='#000'
+                                fill='#55d400'
                                 fillOpacity='1'
                                 d='M609.764 163.663C506.548 193.086 487.646 276.53 494.308 329.538 420.68 242.987 423.692 143.42 423.692 0 187.531 89.046 242.446 345.733 235.384 423.692c-59.387-48.631-70.615-164.77-70.615-164.77-62.707 32.271-94.154 118.422-94.154 188.308 0 169.006 136.994 306 306 306s306-136.994 306-306c0-100.438-73.746-146.762-72.851-283.567zm-221.379 542.49c-149.493 0-270.692-126.143-270.692-267.75 0-32.906.729-59.575 23.538-85.327-2.495 14.9 32.883 142.526 148.41 135.84-5.014-96.955-31.235-334.481 90.576-416.583-10.781 129.085 20.831 302.493 161.851 327.82-8.074-51.761-7.133-137.888 29.141-153.8 3.884 79.301 62.541 128.237 62.541 204.455-.001 138.006-133.534 255.345-245.365 255.345z'
                             ></path>
@@ -1830,7 +1853,7 @@ const Floor = (props) => {
             </g>
             <path
                 id='airpressure'
-                d='M109.91 164.014v2.038h3.434v2.039h-1.717v2.038h1.717v2.039h-1.717v2.038h1.717v2.038h-1.717v2.039h1.717v2.038h-1.717v2.039h1.717v2.038h-1.717v2.039h1.717v2.038h-3.433v2.039h5.15v-26.5zm-13.733 2.038c0 4.897-.772 6.649-1.636 8.855-.808 2.065-1.669 4.523-1.777 9.491h-3.453l4.291 5.096 4.292-5.096h-3.393c.102-4.6.805-6.612 1.596-8.631.853-2.178 1.797-4.543 1.797-9.715zm10.3 0c0 4.897-.772 6.649-1.636 8.855-.808 2.065-1.669 4.523-1.777 9.491h-3.453l4.291 5.096 4.292-5.096h-3.393c.102-4.6.805-6.612 1.596-8.631.853-2.178 1.797-4.543 1.797-9.715z'
+                d='M46.304 60.707v2.039h3.434v2.038H48.02v2.038h1.717v2.039H48.02v2.038h1.717v2.039H48.02v2.038h1.717v2.039H48.02v2.038h1.717v2.039H48.02v2.038h1.717v2.039h-3.434v2.038h5.15v-26.5zm-13.733 2.039c0 4.896-.772 6.648-1.636 8.854-.809 2.065-1.67 4.524-1.777 9.492h-3.454l4.292 5.096 4.292-5.096h-3.393c.102-4.6.805-6.613 1.596-8.632.852-2.178 1.797-4.543 1.797-9.714zm10.3 0c0 4.896-.772 6.648-1.636 8.854-.809 2.065-1.67 4.524-1.777 9.492h-3.454l4.292 5.096 4.292-5.096h-3.393c.102-4.6.805-6.613 1.596-8.632.852-2.178 1.797-4.543 1.797-9.714z'
                 style={{
                     lineHeight: "normal",
                     WebkitTextIndent: "0",
@@ -1848,17 +1871,17 @@ const Floor = (props) => {
                     isolation: "auto",
                     mixBlendMode: "normal",
                 }}
-                fill='#000'
+                fill='#55d400'
                 fillOpacity='1'
                 strokeWidth='1.871'
                 textDecoration='none'
             ></path>
             <path
                 id='airhumidity'
-                fill='#000'
+                fill='#55d400'
                 fillOpacity='1'
                 strokeWidth='1.926'
-                d='M130.855 164.014c-6.799 0-12.33 5.702-12.33 12.712s5.531 12.712 12.33 12.712a.949.978 0 00.2-.02 12.327 12.327 0 001.715-.152 7.841 7.841 0 01-.718-1.86c-.393.047-.793.076-1.197.076-5.774 0-10.433-4.804-10.433-10.756 0-5.953 4.66-10.757 10.433-10.757 4.868 0 8.943 3.43 10.103 8.064a.949.978 0 000 .004c.06.238.094.483.137.725l.441.524c.36.426.957 1.163 1.619 2.055.008-.206.03-.408.03-.615 0-1.028-.128-2.053-.363-3.045a.949.978 0 00-.026-.137c-1.372-5.484-6.207-9.53-11.94-9.53zm0 3.911c-4.703 0-8.536 3.952-8.536 8.8a.949.978 0 101.897 0c0-3.79 2.962-6.844 6.64-6.844.78 0 1.53.14 2.226.397l1.445-1.486a8.238 8.238 0 00-3.546-.86.949.978 0 00-.126-.007zm5.672 1.948a.949.978 0 00-.652.294l-5.69 5.867a.949.978 0 101.34 1.383l5.691-5.867a.949.978 0 00-.689-1.677zm2.864 5.852l-.715.848s-1.212 1.435-2.43 3.224c-.61.894-1.224 1.878-1.701 2.85-.477.97-.845 1.91-.845 2.88 0 3.228 2.559 5.866 5.69 5.866 3.133 0 5.692-2.638 5.692-5.867 0-.97-.368-1.908-.845-2.88-.477-.971-1.091-1.955-1.7-2.85a43.931 43.931 0 00-2.431-3.223zm0 3.079c.418.516.8.947 1.597 2.116.576.846 1.147 1.768 1.56 2.609.412.84.637 1.617.637 1.997 0 2.173-1.687 3.912-3.794 3.912s-3.794-1.74-3.794-3.912c0-.38.225-1.157.637-1.997.413-.84.984-1.763 1.56-2.61.796-1.168 1.18-1.599 1.597-2.115z'
+                d='M37.228 100.685c-6.799 0-12.33 5.702-12.33 12.712s5.531 12.712 12.33 12.712a.949.978 0 00.2-.02 12.327 12.327 0 001.715-.152 7.841 7.841 0 01-.719-1.86c-.392.046-.792.076-1.196.076-5.774 0-10.433-4.804-10.433-10.757 0-5.952 4.66-10.756 10.433-10.756 4.868 0 8.943 3.43 10.103 8.064a.949.978 0 000 .004c.06.238.094.483.137.725l.44.524c.361.426.958 1.163 1.62 2.055.008-.206.03-.408.03-.615 0-1.028-.128-2.053-.364-3.045a.949.978 0 00-.025-.137c-1.372-5.484-6.207-9.53-11.941-9.53zm0 3.911c-4.703 0-8.536 3.952-8.536 8.8a.949.978 0 101.897 0c0-3.791 2.961-6.844 6.639-6.844.781 0 1.53.14 2.226.397l1.445-1.486a8.238 8.238 0 00-3.545-.86.949.978 0 00-.126-.007zm5.672 1.948a.949.978 0 00-.652.294l-5.69 5.867a.949.978 0 101.34 1.383l5.691-5.867a.949.978 0 00-.69-1.677zm2.864 5.852l-.715.848s-1.212 1.435-2.43 3.224c-.61.894-1.224 1.878-1.701 2.85-.477.97-.845 1.909-.845 2.88 0 3.228 2.559 5.866 5.69 5.866 3.133 0 5.691-2.638 5.691-5.867 0-.97-.368-1.909-.844-2.88-.477-.971-1.092-1.955-1.7-2.85a43.931 43.931 0 00-2.431-3.223zm0 3.078c.417.517.8.948 1.597 2.117.576.845 1.147 1.768 1.56 2.608.412.84.636 1.618.636 1.998 0 2.173-1.686 3.912-3.793 3.912-2.108 0-3.794-1.74-3.794-3.912 0-.38.225-1.157.637-1.998.413-.84.984-1.763 1.56-2.608.796-1.169 1.179-1.6 1.597-2.117z'
                 fontFamily='sans-serif'
                 fontWeight='400'
                 overflow='visible'
@@ -1889,7 +1912,7 @@ const Floor = (props) => {
                 strokeMiterlimit='4'
                 strokeOpacity='1'
                 strokeWidth='11.471'
-                transform='matrix(.06776 0 0 .06789 628.668 226.402)'
+                transform='matrix(.06776 0 0 .06789 56.668 194.402)'
             >
                 <circle
                     id='circle2825'
@@ -1923,6 +1946,307 @@ const Floor = (props) => {
                     xlinkHref='#bld'
                 ></use>
             </g>
+            <text
+                xmlSpace='preserve'
+                style={{
+                    lineHeight: "1.25",
+                    InkscapeFontSpecification: "'sans-serif, Bold'",
+                    fontVariantLigatures: "normal",
+                    fontVariantCaps: "normal",
+                    fontVariantNumeric: "normal",
+                    fontFeatureSettings: "normal",
+                    WebkitTextAlign: "start",
+                    textAlign: "start",
+                }}
+                id='fire_text'
+                x='240.59'
+                y='43.158'
+                fill='#fff'
+                fillOpacity='1'
+                stroke='none'
+                fontFamily='sans-serif'
+                fontSize='26.667'
+                fontStretch='normal'
+                fontStyle='normal'
+                fontVariant='normal'
+                fontWeight='bold'
+                letterSpacing='0'
+                textAnchor='start'
+                wordSpacing='0'
+                writingMode='lr-tb'
+            >
+                <tspan
+                    id='tspan5236'
+                    x='240.59'
+                    y='43.158'
+                    style={{
+                        InkscapeFontSpecification: "'sans-serif, Bold'",
+                        fontVariantLigatures: "normal",
+                        fontVariantCaps: "normal",
+                        fontVariantNumeric: "normal",
+                        fontFeatureSettings: "normal",
+                        WebkitTextAlign: "start",
+                        textAlign: "start",
+                    }}
+                    fill='#fff'
+                    fillOpacity='1'
+                    fontFamily='sans-serif'
+                    fontSize='26.667'
+                    fontStretch='normal'
+                    fontStyle='normal'
+                    fontVariant='normal'
+                    fontWeight='bold'
+                    textAnchor='start'
+                    writingMode='lr-tb'
+                >
+                    NO FIRE
+        </tspan>
+            </text>
+            <text
+                xmlSpace='preserve'
+                style={{
+                    lineHeight: "1.25",
+                    InkscapeFontSpecification: "'sans-serif, Bold'",
+                    fontVariantLigatures: "normal",
+                    fontVariantCaps: "normal",
+                    fontVariantNumeric: "normal",
+                    fontFeatureSettings: "normal",
+                    WebkitTextAlign: "start",
+                    textAlign: "start",
+                }}
+                id='security_text'
+                x='240.024'
+                y='83.664'
+                fill='#fff'
+                fillOpacity='1'
+                stroke='none'
+                fontFamily='sans-serif'
+                fontSize='26.667'
+                fontStretch='normal'
+                fontStyle='normal'
+                fontVariant='normal'
+                fontWeight='bold'
+                letterSpacing='0'
+                textAnchor='start'
+                wordSpacing='0'
+                writingMode='lr-tb'
+            >
+                <tspan
+                    id='tspan5236-0'
+                    x='240.024'
+                    y='83.664'
+                    style={{
+                        InkscapeFontSpecification: "'sans-serif, Bold'",
+                        fontVariantLigatures: "normal",
+                        fontVariantCaps: "normal",
+                        fontVariantNumeric: "normal",
+                        fontFeatureSettings: "normal",
+                        WebkitTextAlign: "start",
+                        textAlign: "start",
+                    }}
+                    fill='#fff'
+                    fillOpacity='1'
+                    fontFamily='sans-serif'
+                    fontSize='26.667'
+                    fontStretch='normal'
+                    fontStyle='normal'
+                    fontVariant='normal'
+                    fontWeight='bold'
+                    textAnchor='start'
+                    writingMode='lr-tb'
+                >
+                    NOT SECURE
+        </tspan>
+            </text>
+            <text
+                xmlSpace='preserve'
+                style={{
+                    lineHeight: "1.25",
+                    InkscapeFontSpecification: "'sans-serif, Bold'",
+                    fontVariantLigatures: "normal",
+                    fontVariantCaps: "normal",
+                    fontVariantNumeric: "normal",
+                    fontFeatureSettings: "normal",
+                    WebkitTextAlign: "start",
+                    textAlign: "start",
+                }}
+                id='airtemp_reading'
+                x='68.803'
+                y='43.249'
+                fill='#fff'
+                fillOpacity='1'
+                stroke='none'
+                fontFamily='sans-serif'
+                fontSize='26.667'
+                fontStretch='normal'
+                fontStyle='normal'
+                fontVariant='normal'
+                fontWeight='bold'
+                letterSpacing='0'
+                textAnchor='start'
+                wordSpacing='0'
+                writingMode='lr-tb'
+            >
+                <tspan
+                    id='tspan5236-1'
+                    x='68.803'
+                    y='43.249'
+                    style={{
+                        InkscapeFontSpecification: "'sans-serif, Bold'",
+                        fontVariantLigatures: "normal",
+                        fontVariantCaps: "normal",
+                        fontVariantNumeric: "normal",
+                        fontFeatureSettings: "normal",
+                        WebkitTextAlign: "start",
+                        textAlign: "start",
+                    }}
+                    fill='#fff'
+                    fillOpacity='1'
+                    fontFamily='sans-serif'
+                    fontSize='26.667'
+                    fontStretch='normal'
+                    fontStyle='normal'
+                    fontVariant='normal'
+                    fontWeight='bold'
+                    textAnchor='start'
+                    writingMode='lr-tb'
+                >
+                    23 °C{" "}
+                </tspan>
+            </text>
+            <text
+                xmlSpace='preserve'
+                style={{ lineHeight: "1.25" }}
+                id='airpressure_reading'
+                x='66.711'
+                y='83.574'
+                fill='#fff'
+                fillOpacity='1'
+                stroke='none'
+                fontFamily='sans-serif'
+                fontSize='40'
+                fontStyle='normal'
+                fontWeight='normal'
+                letterSpacing='0'
+                wordSpacing='0'
+            >
+                <tspan
+                    id='tspan6031'
+                    x='66.711'
+                    y='83.574'
+                    style={{
+                        InkscapeFontSpecification: "'sans-serif, Bold'",
+                        fontVariantLigatures: "normal",
+                        fontVariantCaps: "normal",
+                        fontVariantNumeric: "normal",
+                        fontFeatureSettings: "normal",
+                        WebkitTextAlign: "start",
+                        textAlign: "start",
+                    }}
+                    fill='#fff'
+                    fillOpacity='1'
+                    fontFamily='sans-serif'
+                    fontSize='26.667'
+                    fontStretch='normal'
+                    fontStyle='normal'
+                    fontVariant='normal'
+                    fontWeight='bold'
+                    textAnchor='start'
+                    writingMode='lr-tb'
+                >
+                    8 Pa
+        </tspan>
+            </text>
+            <text
+                xmlSpace='preserve'
+                style={{ lineHeight: "1.25" }}
+                id='airhumidity_reading'
+                x='64.339'
+                y='124.081'
+                fill='#fff'
+                fillOpacity='1'
+                stroke='none'
+                fontFamily='sans-serif'
+                fontSize='40'
+                fontStyle='normal'
+                fontWeight='normal'
+                letterSpacing='0'
+                wordSpacing='0'
+            >
+                <tspan
+                    id='tspan6031-3'
+                    x='64.339'
+                    y='124.081'
+                    style={{
+                        InkscapeFontSpecification: "'sans-serif, Bold'",
+                        fontVariantLigatures: "normal",
+                        fontVariantCaps: "normal",
+                        fontVariantNumeric: "normal",
+                        fontFeatureSettings: "normal",
+                        WebkitTextAlign: "start",
+                        textAlign: "start",
+                    }}
+                    fill='#fff'
+                    fillOpacity='1'
+                    fontFamily='sans-serif'
+                    fontSize='26.667'
+                    fontStretch='normal'
+                    fontStyle='normal'
+                    fontVariant='normal'
+                    fontWeight='bold'
+                    textAnchor='start'
+                    writingMode='lr-tb'
+                >
+                    40 %
+        </tspan>
+            </text>
+            <text
+                xmlSpace='preserve'
+                style={{ lineHeight: "1.25" }}
+                id='neutron_reading'
+                x='91.93'
+                y='204.109'
+                fill='#fff'
+                fillOpacity='1'
+                stroke='none'
+                fontFamily='sans-serif'
+                fontSize='40'
+                fontStyle='normal'
+                fontWeight='normal'
+                letterSpacing='0'
+                wordSpacing='0'
+            >
+                <tspan
+                    id='tspan6031-7'
+                    x='91.93'
+                    y='204.109'
+                    style={{
+                        InkscapeFontSpecification: "'sans-serif, Bold'",
+                        fontVariantLigatures: "normal",
+                        fontVariantCaps: "normal",
+                        fontVariantNumeric: "normal",
+                        fontFeatureSettings: "normal",
+                        WebkitTextAlign: "start",
+                        textAlign: "start",
+                    }}
+                    fill='#fff'
+                    fillOpacity='1'
+                    fontFamily='sans-serif'
+                    fontSize='26.667'
+                    fontStretch='normal'
+                    fontStyle='normal'
+                    fontVariant='normal'
+                    fontWeight='bold'
+                    textAnchor='start'
+                    writingMode='lr-tb'
+                >
+                    8 uSv/h
+        </tspan>
+            </text>
+
+
+
+
 
         </g>
     )

@@ -533,6 +533,8 @@ class AlarmHandler extends Component {
 
     handleAlarmAcknowledge = (event, index) => {
         // console.log("Ack alarm:", index)
+        event.preventDefault()
+        event.stopPropagation()
 
         let username = JSON.parse(localStorage.getItem('user'))
 
