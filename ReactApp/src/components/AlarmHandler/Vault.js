@@ -7,6 +7,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import SideBar from '../SystemComponents/SideBar';
 import SelectionList from '../BaseComponents/SelectionList';
 import SimpleSlider from '../BaseComponents/SimpleSlider';
+import DataConnection from '../SystemComponents/DataConnection';
+
 import Floor from './SVG Components/Floor'
 
 // Styles
@@ -32,16 +34,71 @@ const styles = theme => ({
 
 class Vault extends Component {
     state = {
+        alarmDict: {}
     }
 
     logout = () => {
         localStorage.removeItem('jwt');
     }
 
+    handlePVChange = (value, pvname, initialized, severity, timestamp) => {
+        let alarmDict = { ...this.state.alarmDict }
+
+        if (pvname.includes("building_fire")) {
+            alarmDict["building_fire"] = severity > 0
+        }
+        else if (pvname.includes("building_security")){
+            alarmDict["building_security"] = severity > 0
+        }
+        else if (pvname.includes("building_airtemp")){
+            alarmDict["building_airtemp_sev"] = severity
+            alarmDict["building_airtemp_val"] = value
+        }
+        else if (pvname.includes("building_airhumidity")){
+            alarmDict["building_airhumidity_sev"] = severity
+            alarmDict["building_airhumidity_val"] = value
+        }
+
+        this.setState({ alarmDict: alarmDict })
+    }
+
     render() {
         const { classes } = this.props;
+
+        const pvArray = [
+            "demoAlarmsIOC:building_fire",
+            "demoAlarmsIOC:building_airtemp",
+            "demoAlarmsIOC:building_airhumidity",
+            "demoAlarmsIOC:building_airpressure_diff",
+            "demoAlarmsIOC:building_security",
+            "demoAlarmsIOC:cyclotron_interlocks",
+            "demoAlarmsIOC:cyclotron_airpressure",
+            "demoAlarmsIOC:cyclotron_RF1",
+            "demoAlarmsIOC:cyclotron_RF2",
+            "demoAlarmsIOC:cyclotron_RF_pickup",
+            "demoAlarmsIOC:cyclotron_safety",
+            "demoAlarmsIOC:cyclotron_vacuum",
+            "demoAlarmsIOC:cyclotron_water_flow",
+            "demoAlarmsIOC:cyclotron_water_temp",
+            "demoAlarmsIOC:vault_radiation",
+            "demoAlarmsIOC:vault_door",
+            "demoAlarmsIOC:vault_clear"
+        ]
+
+        const pvs = pvArray.map(pv => {
+            // console.log(pv)
+            return (
+                <DataConnection
+                    key={pv}
+                    pv={'pva://' + pv}
+                    handleInputValue={this.handlePVChange}
+                />
+            )
+        })
+
         return (
             <React.Fragment>
+                {pvs}
                 <SideBar />
                 <Grid
                     container
@@ -59,7 +116,7 @@ class Vault extends Component {
                                 height='100%'
                                 viewBox='0 0 1100 900'
                             >
-                                <Floor />
+                                <Floor alarmDict={this.state.alarmDict}/>
                             </svg>
                         </Card>
                     </Grid>
