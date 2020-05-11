@@ -405,25 +405,29 @@ def descDisconn(pvname, conn):
             ]))
 
 
-def onChanges(pvname=None, value=None, severity=None, timestamp=None, **kw):
+def onChanges(pvname=None, value=None, **kw):
     global alarmDictInitialised
     if (alarmDictInitialised):
         _thread.start_new_thread(pvPrepareData, (
             pvname,
             value,
-            severity,
-            timestamp,
+            kw["severity"],
+            kw["timestamp"],
+            kw["units"],
+            kw["enum_strs"]
         ))
     else:
         _thread.start_new_thread(pvInitData, (
             pvname,
             value,
-            severity,
-            timestamp,
+            kw["severity"],
+            kw["timestamp"],
+            kw["units"],
+            kw["enum_strs"]
         ))
 
 
-def pvPrepareData(pvname, value, severity, timestamp):
+def pvPrepareData(pvname, value, severity, timestamp, units, enum_strs):
     timestamp_string = datetime.fromtimestamp(timestamp).strftime(
         "%a, %d %b %Y at %H:%M:%S")
 
@@ -455,12 +459,18 @@ def pvPrepareData(pvname, value, severity, timestamp):
         pvELN.append(doc["pvs"][pvKey]["latch"])
         pvELN.append(doc["pvs"][pvKey]["notify"])
 
+    # manipulate value
+    if(enum_strs):
+        value = enum_strs[value]
+    else:
+        value = str(value)+" "+units
+
     processPVAlarm(pvname, value, severity, timestamp, timestamp_string, pvELN)
 
 
-def pvInitData(pvname, value, severity, timestamp):
+def pvInitData(pvname, value, severity, timestamp, units, enum_strs):
     if (severity > 0):
-        pvInitDict[pvname] = [value, severity, timestamp]
+        pvInitDict[pvname] = [value, severity, timestamp, units, enum_strs]
 
 
 def processPVAlarm(pvname, value, severity, timestamp, timestamp_string, pvELN):
@@ -640,7 +650,8 @@ def initSubPVDict(subArea, areaName):
                 pvname = subArea[key][pvKey]["name"]
                 pv = PV(pvname=pvname,
                         connection_timeout=0.001,
-                        callback=onChanges)
+                        callback=onChanges,
+                        form='ctrl')
                 pvDict[subAreaName + "=" + pvKey] = pv
                 areaDict[subAreaName + "=" +
                          pvKey] = subArea[key][pvKey]["name"]
@@ -657,7 +668,8 @@ def initPVDict():
                     pvname = area[key][pvKey]["name"]
                     pv = PV(pvname=pvname,
                             connection_timeout=0.001,
-                            callback=onChanges)
+                            callback=onChanges,
+                            form='ctrl')
                     pvDict[areaName + "=" + pvKey] = pv
                     areaDict[areaName + "=" + pvKey] = area[key][pvKey]["name"]
             if ("subArea" in key):
@@ -741,7 +753,13 @@ def initialiseAlarmIOC():
         else:
             # if alarm was activated when server initialised
             try:
-                lastAlarmVal = pvInitDict[pvname][0]
+                units = pvInitDict[pvname][3]
+                enum_strs = pvInitDict[pvname][4]
+                value = pvInitDict[pvname][0]
+                if(enum_strs):
+                    lastAlarmVal = enum_strs[value]
+                else:
+                    lastAlarmVal = str(value)+" "+units
                 lastAlarmTime = datetime.fromtimestamp(
                     pvInitDict[pvname][2]).strftime("%a, %d %b %Y at %H:%M:%S")
                 # set current alarm status
