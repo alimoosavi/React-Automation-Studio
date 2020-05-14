@@ -12,7 +12,6 @@ dbLoadDatabase "dbd/demoAlarmsIOC.dbd"
 demoAlarmsIOC_registerRecordDeviceDriver pdbbase
 
 ## Load record instances
-# dbLoadTemplate "db/demoAlarms.substitutions"
 dbLoadRecords "db/demoAlarms.db"
 
 ## Set this to see messages from mySub

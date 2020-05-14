@@ -308,7 +308,7 @@ class AlarmTable extends Component {
                                                         value={areaAlarms[areaAlarmName]["enable"]}
                                                         color="primary"
                                                         checked={areaAlarms[areaAlarmName]["enable"]}
-                                                        onChange={event => this.props.itemChecked(event, areaName, alarm, "enable", !areaAlarms[areaAlarmName]["enable"])}
+                                                        onClick={event => this.props.itemChecked(event, areaName, alarm, "enable", !areaAlarms[areaAlarmName]["enable"])}
                                                     />
                                                 </TableCell>
                                                 <TableCell align="center">
@@ -318,7 +318,7 @@ class AlarmTable extends Component {
                                                         value={areaAlarms[areaAlarmName]["latch"]}
                                                         color="primary"
                                                         checked={areaAlarms[areaAlarmName]["latch"]}
-                                                        onChange={event => this.props.itemChecked(event, areaName, alarm, "latch", !areaAlarms[areaAlarmName]["latch"])}
+                                                        onClick={event => this.props.itemChecked(event, areaName, alarm, "latch", !areaAlarms[areaAlarmName]["latch"])}
                                                     />
                                                 </TableCell>
                                                 <TableCell align="center">
@@ -328,7 +328,7 @@ class AlarmTable extends Component {
                                                         value={areaAlarms[areaAlarmName]["notify"]}
                                                         color="primary"
                                                         checked={areaAlarms[areaAlarmName]["notify"]}
-                                                        onChange={event => this.props.itemChecked(event, areaName, alarm, "notify", !areaAlarms[areaAlarmName]["notify"])}
+                                                        onClick={event => this.props.itemChecked(event, areaName, alarm, "notify", !areaAlarms[areaAlarmName]["notify"])}
                                                     />
                                                 </TableCell>
                                             </TableRow>

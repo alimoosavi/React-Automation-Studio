@@ -15,17 +15,29 @@ const Floor = (props) => {
 
     const darkTheme = props.theme.palette.type === 'dark'
 
-    const building_fire = props.alarmDict["building_fire"]
+    const { alarmDict } = props
 
-    const building_security = props.alarmDict["building_security"]
+    const { building_fire, building_security } = alarmDict
 
-    const building_airtemp_sev = props.alarmDict["building_airtemp_sev"]
-    const building_airtemp_val = props.alarmDict["building_airtemp_val"]
+    const { building_airtemp_sev, building_airtemp_val } = alarmDict
     const building_airtemp_fil = sevFill(building_airtemp_sev)
 
-    const building_airhumidity_sev = props.alarmDict["building_airhumidity_sev"]
-    const building_airhumidity_val = props.alarmDict["building_airhumidity_val"]
+    const { building_airhumidity_sev, building_airhumidity_val } = alarmDict
     const building_airhumidity_fil = sevFill(building_airhumidity_sev)
+
+    const { building_airpressure_diff_sev, building_airpressure_diff_val } = alarmDict
+    const building_airpressure_diff_fil = sevFill(building_airpressure_diff_sev)
+
+    const { vault_door } = alarmDict
+
+    const { vault_radiation_sev, vault_radiation_val } = alarmDict
+    const vault_radiation_fil = sevFill(vault_radiation_sev)
+
+    const { cyclotron_interlocks, cyclotron_safety, cyclotron_RF1, cyclotron_RF2 } = alarmDict
+    const { cyclotron_RF_pickup, cyclotron_RF_pickup_sev } = alarmDict
+    const cyclotron_RF_pickup_fil = sevFill(cyclotron_RF_pickup_sev)
+
+
 
 
     return (
@@ -205,13 +217,13 @@ const Floor = (props) => {
                     <stop
                         id='stop3074'
                         offset='0'
-                        stopColor='#ffb380'
+                        stopColor={cyclotron_RF_pickup ? cyclotron_RF_pickup_fil : cyclotron_RF1 ? '#c62828' : '#ffb380'}
                         stopOpacity='1'
                     ></stop>
                     <stop
                         id='stop3076'
                         offset='1'
-                        stopColor='#ffb380'
+                        stopColor={cyclotron_RF_pickup ? cyclotron_RF_pickup_fil : cyclotron_RF1 ? '#c62828' : '#ffb380'}
                         stopOpacity='0'
                     ></stop>
                 </linearGradient>
@@ -281,8 +293,22 @@ const Floor = (props) => {
                     y2='126.935'
                     gradientTransform='translate(132.302 268.061)'
                     gradientUnits='userSpaceOnUse'
-                    xlinkHref='#linearGradient3078'
+                    xlinkHref='#linearGradient3099'
                 ></linearGradient>
+                <linearGradient id='linearGradient3099'>
+                    <stop
+                        id='stop3074'
+                        offset='0'
+                        stopColor={cyclotron_RF_pickup ? cyclotron_RF_pickup_fil : cyclotron_RF2 ? '#c62828' : '#ffb380'}
+                        stopOpacity='1'
+                    ></stop>
+                    <stop
+                        id='stop3076'
+                        offset='1'
+                        stopColor={cyclotron_RF_pickup ? cyclotron_RF_pickup_fil : cyclotron_RF2 ? '#c62828' : '#ffb380'}
+                        stopOpacity='0'
+                    ></stop>
+                </linearGradient>
                 <linearGradient
                     id='linearGradient2573'
                     x1='311.225'
@@ -1812,7 +1838,7 @@ const Floor = (props) => {
             <path
                 id='vaultdoor'
                 fill='none'
-                stroke='#000'
+                stroke={vault_door ? '#c62828' : "#000"}
                 strokeDasharray='none'
                 strokeLinecap='butt'
                 strokeLinejoin='miter'
@@ -1892,7 +1918,7 @@ const Floor = (props) => {
                     isolation: "auto",
                     mixBlendMode: "normal",
                 }}
-                fill='#55d400'
+                fill={building_airpressure_diff_fil}
                 fillOpacity='1'
                 strokeWidth='1.871'
                 textDecoration='none'
@@ -1928,7 +1954,7 @@ const Floor = (props) => {
             ></path>
             <g
                 id='neutron'
-                stroke='#000'
+                stroke={vault_radiation_fil}
                 strokeDasharray='none'
                 strokeMiterlimit='4'
                 strokeOpacity='1'
@@ -2164,7 +2190,7 @@ const Floor = (props) => {
                         WebkitTextAlign: "start",
                         textAlign: "start",
                     }}
-                    fill='#fff'
+                    fill={building_airpressure_diff_fil}
                     fillOpacity='1'
                     fontFamily='sans-serif'
                     fontSize='26.667'
@@ -2175,8 +2201,8 @@ const Floor = (props) => {
                     textAnchor='start'
                     writingMode='lr-tb'
                 >
-                    8 Pa
-        </tspan>
+                    {`${building_airpressure_diff_val}Pa`}
+                </tspan>
             </text>
             <text
                 xmlSpace='preserve'
@@ -2250,7 +2276,7 @@ const Floor = (props) => {
                         WebkitTextAlign: "start",
                         textAlign: "start",
                     }}
-                    fill='#fff'
+                    fill={vault_radiation_fil}
                     fillOpacity='1'
                     fontFamily='sans-serif'
                     fontSize='26.667'
@@ -2261,8 +2287,8 @@ const Floor = (props) => {
                     textAnchor='start'
                     writingMode='lr-tb'
                 >
-                    8 uSv/h
-        </tspan>
+                    {`${vault_radiation_val}uSv/h`}
+                </tspan>
             </text>
 
 

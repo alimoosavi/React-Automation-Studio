@@ -47,16 +47,46 @@ class Vault extends Component {
         if (pvname.includes("building_fire")) {
             alarmDict["building_fire"] = severity > 0
         }
-        else if (pvname.includes("building_security")){
+        else if (pvname.includes("building_security")) {
             alarmDict["building_security"] = severity > 0
         }
-        else if (pvname.includes("building_airtemp")){
+        else if (pvname.includes("building_airtemp")) {
             alarmDict["building_airtemp_sev"] = severity
             alarmDict["building_airtemp_val"] = value
         }
-        else if (pvname.includes("building_airhumidity")){
+        else if (pvname.includes("building_airhumidity")) {
             alarmDict["building_airhumidity_sev"] = severity
             alarmDict["building_airhumidity_val"] = value
+        }
+        else if (pvname.includes("building_airpressure_diff")) {
+            alarmDict["building_airpressure_diff_sev"] = severity
+            alarmDict["building_airpressure_diff_val"] = value
+        }
+        else if (pvname.includes("vault_door")) {
+            alarmDict["vault_door"] = severity > 0
+        }
+        else if (pvname.includes("vault_clear")) {
+            alarmDict["vault_clear"] = severity > 0
+        }
+        else if (pvname.includes("vault_radiation")) {
+            alarmDict["vault_radiation_sev"] = severity
+            alarmDict["vault_radiation_val"] = value
+        }
+        else if (pvname.includes("cyclotron_interlocks")) {
+            alarmDict["cyclotron_interlocks"] = severity > 0
+        }
+        else if (pvname.includes("cyclotron_safety")) {
+            alarmDict["cyclotron_safety"] = severity > 0
+        }
+        else if (pvname.includes("cyclotron_RF_pickup")) {
+            alarmDict["cyclotron_RF_pickup"] = severity > 0
+            alarmDict["cyclotron_RF_pickup_sev"] = severity
+        }
+        else if (pvname.includes("cyclotron_RF1")) {
+            alarmDict["cyclotron_RF1"] = severity > 0
+        }
+        else if (pvname.includes("cyclotron_RF2")) {
+            alarmDict["cyclotron_RF2"] = severity > 0
         }
 
         this.setState({ alarmDict: alarmDict })
@@ -116,7 +146,7 @@ class Vault extends Component {
                                 height='100%'
                                 viewBox='0 0 1100 900'
                             >
-                                <Floor alarmDict={this.state.alarmDict}/>
+                                <Floor alarmDict={this.state.alarmDict} />
                             </svg>
                         </Card>
                     </Grid>

@@ -443,12 +443,9 @@ class AlarmHandler extends Component {
     }
 
     handleTableItemCheck = (event, index, alarm, field, value) => {
-        // console.log(index, alarm, field, value)
-
         // to prevent re render of alarm log table?
-        // not really necessary from a performance point of view
-        // event.preventDefault()
-        // event.stopPropagation()
+        event.preventDefault()
+        event.stopPropagation()
 
         let socket = this.context.socket;
         let jwt = JSON.parse(localStorage.getItem('jwt'));
@@ -1119,7 +1116,7 @@ class AlarmHandler extends Component {
                             <Grid item xs={10} style={{ paddingRight: 32 }}>
                                 <ExpansionPanel
                                     expanded={this.state.alarmTableExpand}
-                                    onChange={() => this.handleExpandPanel('alarmTable')}
+                                    onClick={() => this.handleExpandPanel('alarmTable')}
                                     TransitionProps={{
                                         onEntered: () => this.handleExpansionComplete('alarmTable', true),
                                         onExited: () => this.handleExpansionComplete('alarmTable', false)
@@ -1185,7 +1182,7 @@ class AlarmHandler extends Component {
                                 </ExpansionPanel>
                                 <ExpansionPanel
                                     expanded={this.state.alarmLogExpand}
-                                    onChange={() => this.handleExpandPanel('alarmLog')}
+                                    onClick={() => this.handleExpandPanel('alarmLog')}
                                     TransitionProps={{
                                         onEntered: () => this.handleExpansionComplete('alarmLog', true),
                                         onExited: () => this.handleExpansionComplete('alarmLog', false)
