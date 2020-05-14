@@ -490,6 +490,8 @@ class AlarmHandler extends Component {
     }
 
     handleTableRowClick = (event, alarmName) => {
+        event.preventDefault()
+        event.stopPropagation()
         this.setState({ alarmLogSelectedName: alarmName.replace(/[=*]/g, " > ") })
         this.handleUpdateLogDisplayData(alarmName)
     }

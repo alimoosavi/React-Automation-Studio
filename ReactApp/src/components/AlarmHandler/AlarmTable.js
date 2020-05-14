@@ -97,7 +97,12 @@ class AlarmTable extends Component {
             <TableContainer component={Paper} style={{ height: this.props.height }} ref={this.myRef}>
                 <Table aria-label="Alarm Table" stickyHeader size="small">
                     <TableHead>
-                        <TableRow>
+                        <TableRow
+                            onClick={(event) => {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }}
+                        >
                             {this.props.debug
                                 ? <TableCell>TEST ALM</TableCell>
                                 : null}
@@ -168,7 +173,12 @@ class AlarmTable extends Component {
                                                 </TableRow>
                                                 : null}
                                             {isTopArea && newSubArea && this.props.alarmTableSearchString.length === 0
-                                                ? <TableRow>
+                                                ? <TableRow
+                                                    onClick={(event) => {
+                                                        event.preventDefault()
+                                                        event.stopPropagation()
+                                                    }}
+                                                >
                                                     <TableCell
                                                         align="left"
                                                         style={{

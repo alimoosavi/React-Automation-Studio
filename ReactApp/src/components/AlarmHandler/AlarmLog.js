@@ -53,7 +53,13 @@ class AlarmLog extends Component {
             const visible = content.toLowerCase().includes(this.props.alarmLogSearchString.toLowerCase())
             return (
                 visible
-                    ? <TableRow hover key={`${entry.timestamp}-${entry.entry}`}>
+                    ? <TableRow
+                        onClick={(event) => {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }}
+                        hover
+                        key={`${entry.timestamp}-${entry.entry}`}>
                         <TableCell>{content}</TableCell>
                     </TableRow>
                     : null
