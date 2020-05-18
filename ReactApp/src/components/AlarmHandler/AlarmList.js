@@ -93,6 +93,8 @@ const useStyles = makeStyles(theme => ({
 
 const AlarmList = props => {
 
+    // console.log("AlarmList rendered")
+
     const classes = useStyles();
 
     return (
@@ -285,4 +287,4 @@ const AlarmList = props => {
 
 }
 
-export default AlarmList;
+export default React.memo(AlarmList);

@@ -1,9 +1,6 @@
-import React, { Component } from 'react';
+import React, { useRef, useEffect } from 'react';
 
-import withStyles from '@material-ui/core/styles/withStyles';
-// import List from '@material-ui/core/List';
-// import ListItem from '@material-ui/core/ListItem';
-// import ListItemText from '@material-ui/core/ListItemText';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,70 +9,53 @@ import TableRow from '@material-ui/core/TableRow';
 
 
 // Styles
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     root: {
-        // padding: theme.spacing(1),
-        // paddingLeft: theme.spacing(8),
-        // overflowX: "hidden",
-        // overflowY: "hidden",
         width: '100%',
         overflowY: 'auto',
 
     },
-});
-class AlarmLog extends Component {
-    constructor(props) {
-        super(props);
-        this.myRef = React.createRef()
-        this.state = {}
-    }
+}));
 
-    shouldComponentUpdate(nextProps, nextState) {
-        const update = this.props.height !== nextProps.height
-            || this.props.alarmLogDisplayArray.length !== nextProps.alarmLogDisplayArray.length
-            || this.props.alarmLogSelectedKey !== nextProps.alarmLogSelectedKey
-            || this.props.alarmLogSearchString !== nextProps.alarmLogSearchString
-        return update
-    }
+const AlarmLog = props => {
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.alarmLogDisplayArray.length !== this.props.alarmLogDisplayArray.length) {
-            // reset scroll only if new area selected
-            this.myRef.current.scrollTo(0, 0)
-        }
-    }
+    // console.log("AlarmLog rendered")
 
-    render() {
-        // console.log(this.props.alarmLogSearchString)
-        const logData = this.props.alarmLogDisplayArray.map((entry) => {
-            const date = new Date(entry.timestamp * 1000)
-            const content = `${date.toLocaleString()}: ${entry.entry}`
-            const visible = content.toLowerCase().includes(this.props.alarmLogSearchString.toLowerCase())
-            return (
-                visible
-                    ? <TableRow
-                        onClick={(event) => {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }}
-                        hover
-                        key={`${entry.timestamp}-${entry.entry}`}>
-                        <TableCell>{content}</TableCell>
-                    </TableRow>
-                    : null
-            )
-        })
+    const classes = useStyles();
+    const myRef = useRef()
 
+    useEffect(() => {
+        myRef.current.scrollTo(0, 0)
+    }, [props.alarmLogDisplayArray.length])
+
+    const logData = props.alarmLogDisplayArray.map((entry) => {
+        const date = new Date(entry.timestamp * 1000)
+        const content = `${date.toLocaleString()}: ${entry.entry}`
+        const visible = content.toLowerCase().includes(props.alarmLogSearchString.toLowerCase())
         return (
-            <TableContainer style={{ height: this.props.height, overflow: 'auto' }} ref={this.myRef}>
-                <Table aria-label="Log Table" size="small" >
-                    <TableBody>
-                        {logData}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            visible
+                ? <TableRow
+                    onClick={(event) => {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }}
+                    hover
+                    key={`${entry.timestamp}-${entry.entry}`}>
+                    <TableCell>{content}</TableCell>
+                </TableRow>
+                : null
         )
-    }
+    })
+
+    return (
+        <TableContainer style={{ height: props.height, overflow: 'auto' }} ref={myRef}>
+            <Table aria-label="Log Table" size="small" >
+                <TableBody>
+                    {logData}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    )
 }
 
-export default withStyles(styles, { withTheme: true })(AlarmLog);
+export default React.memo(AlarmLog)
