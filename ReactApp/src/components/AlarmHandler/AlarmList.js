@@ -38,56 +38,107 @@ const useStyles = makeStyles(theme => ({
         paddingLeft: theme.spacing(4),
     },
     majorAlarm: {
-        background: red['800'],
-        color: 'white',
+        backgroundColor: red['800'],
+        color: grey['200'],
         '&:hover': {
-            color: red['500']
+            backgroundColor: red['600'],
+            color: grey['100'],
+        },
+        "&.Mui-selected": {
+            backgroundColor: red['600'],
+            color: 'white',
+            borderStyle: "solid",
+            borderWidth: "thin",
+            borderColor: theme.palette.primary.main,
+            '&:hover': {
+                backgroundColor: red['400'],
+            },
         }
-    },
-    majorAlarmSelected: {
-        color: red['500']
     },
     majorAlarmAcked: {
         // red['800'] = #c62828 = rgb(198,40,40)
-        background: 'rgba(198,40,40,0.3)',
-        color: 'white',
+        backgroundColor: 'rgba(198,40,40,0.3)',
+        color: grey['200'],
         '&:hover': {
-            color: 'rgba(244,67,54,0.8)'
+            // red['600'] = #e53935 = rgb(229, 57, 53)
+            backgroundColor: 'rgba(229,57,53,0.3)',
+            color: grey['100'],
+        },
+        "&.Mui-selected": {
+            backgroundColor: 'rgba(229,57,53,0.5)',
+            color: 'white',
+            borderStyle: "solid",
+            borderWidth: "thin",
+            borderColor: theme.palette.primary.main,
+            '&:hover': {
+                // red['400'] = #ef5350 = rgb(239, 83, 80)
+                backgroundColor: 'rgba(239,83,80,0.4)',
+            },
         }
-    },
-    majorAlarmAckedSelected: {
-        color: 'rgba(244,67,54,0.8)'
     },
     minorAlarm: {
-        background: deepOrange['400'],
-        color: 'white',
+        backgroundColor: deepOrange['400'],
+        color: grey['200'],
         '&:hover': {
-            color: deepOrange['200']
+            backgroundColor: deepOrange['300'],
+            color: grey['100'],
+        },
+        "&.Mui-selected": {
+            backgroundColor: deepOrange['300'],
+            color: 'white',
+            borderStyle: "solid",
+            borderWidth: "thin",
+            borderColor: theme.palette.primary.main,
+            '&:hover': {
+                backgroundColor: deepOrange['200'],
+            },
         }
-    },
-    minorAlarmSelected: {
-        color: deepOrange['200']
     },
     minorAlarmAcked: {
         // deepOrange['400'] = #ff7043 = rgb(255,112,67)
-        background: 'rgba(255,112,67,0.3)',
-        color: 'white',
+        backgroundColor: 'rgba(255,112,67,0.3)',
+        color: grey['200'],
         '&:hover': {
-            color: 'rgba(255,171,145,0.8)'
+            // deepOrange['300'] = #ff8a65 = rgb(255, 138, 101)
+            backgroundColor: 'rgba(255,138,101,0.3)',
+            color: grey['100'],
+        },
+        "&.Mui-selected": {
+            backgroundColor: 'rgba(255,138,101,0.5)',
+            color: 'white',
+            borderStyle: "solid",
+            borderWidth: "thin",
+            borderColor: theme.palette.primary.main,
+            '&:hover': {
+                // deepOrange['200'] = #ffab91 = rgb(255, 171, 145)
+                backgroundColor: 'rgba(255,171,145,0.4)',
+            },
         }
     },
-    minorAlarmAckedSelected: {
-        color: 'rgba(255,171,145,0.8)'
+    noAlarm: {
+        color: grey['200'],
+        '&:hover': {
+            color: grey['100'],
+        },
+        "&.Mui-selected": {
+            color: 'white',
+            borderStyle: "solid",
+            borderWidth: "thin",
+            borderColor: theme.palette.primary.main
+        }
     },
     disabled: {
-        background: 'grey',
-        color: grey['400'],
+        backgroundColor: 'grey',
+        color: grey['200'],
         '&:hover': {
-            color: grey['400'],
+            color: grey['100'],
+        },
+        "&.Mui-selected": {
+            color: 'white',
+            borderStyle: "solid",
+            borderWidth: "thin",
+            borderColor: theme.palette.primary.main
         }
-    },
-    disabledSelected: {
-        color: grey['300'],
     }
 }));
 
@@ -135,15 +186,15 @@ const AlarmList = props => {
 
                                             classes={(props.areaEnabled[`${area["area"]}`]
                                                 ? props.areaPVDict[`${area["area"]}`] == 6 || props.areaPVDict[`${area["area"]}`] == 4
-                                                    ? { root: classes.majorAlarm, selected: classes.majorAlarmSelected }
+                                                    ? { root: classes.majorAlarm }
                                                     : props.areaPVDict[`${area["area"]}`] == 5 || props.areaPVDict[`${area["area"]}`] == 3
-                                                        ? { root: classes.majorAlarmAcked, selected: classes.majorAlarmAckedSelected }
+                                                        ? { root: classes.majorAlarmAcked }
                                                         : props.areaPVDict[`${area["area"]}`] == 2
-                                                            ? { root: classes.minorAlarm, selected: classes.minorAlarmSelected }
+                                                            ? { root: classes.minorAlarm }
                                                             : props.areaPVDict[`${area["area"]}`] == 1
-                                                                ? { root: classes.minorAlarmAcked, selected: classes.minorAlarmAckedSelected }
-                                                                : {}    // noAlarm
-                                                : { root: classes.disabled, selected: classes.disabledSelected }
+                                                                ? { root: classes.minorAlarmAcked }
+                                                                : { root: classes.noAlarm }    // noAlarm
+                                                : { root: classes.disabled }
                                             )}
                                         >
                                             <ListItemText primary={area["area"]} />
@@ -190,39 +241,28 @@ const AlarmList = props => {
                                         {
                                             area["subAreas"] ?
                                                 <Collapse in={props.areaSubAreaOpen[`${area["area"]}`]} timeout="auto" unmountOnExit>
-                                                    <List component="div" disablePadding>
+                                                    <List component="div" disablePadding >
                                                         {area["subAreas"].map((subArea, subAreaIndex) => {
                                                             return (
                                                                 <React.Fragment key={`${area["area"]}=${subArea}`}>
                                                                     <ListItem
-
                                                                         button
                                                                         divider
                                                                         className={classes.nested}
                                                                         selected={props.areaSelectedIndex === `${area["area"]}=${subArea}`}
                                                                         onClick={event => props.listItemClick(event, `${area["area"]}=${subArea}`)}
                                                                         onContextMenu={event => props.listItemRightClick(event, `${area["area"]}=${subArea}`)}
-
-                                                                        // classes={(props.areaEnabled[`${area["area"]}=${subArea}`]
-                                                                        //     ? props.areaPVDict[`${area["area"]}=${subArea}`] == 0
-                                                                        //         ? { root: classes.majorAlarm, selected: classes.majorAlarmSelected }
-                                                                        //         : props.areaPVDict[`${area["area"]}=${subArea}`] == 1
-                                                                        //             ? { root: classes.minorAlarm, selected: classes.minorAlarmSelected }
-                                                                        //             : {}
-                                                                        //     : { root: classes.disabled, selected: classes.disabledSelected }
-                                                                        // )}
-
                                                                         classes={(props.areaEnabled[`${area["area"]}=${subArea}`]
                                                                             ? props.areaPVDict[`${area["area"]}=${subArea}`] == 6 || props.areaPVDict[`${area["area"]}=${subArea}`] == 4
-                                                                                ? { root: classes.majorAlarm, selected: classes.majorAlarmSelected }
+                                                                                ? { root: classes.majorAlarm }
                                                                                 : props.areaPVDict[`${area["area"]}=${subArea}`] == 5 || props.areaPVDict[`${area["area"]}=${subArea}`] == 3
-                                                                                    ? { root: classes.majorAlarmAcked, selected: classes.majorAlarmAckedSelected }
+                                                                                    ? { root: classes.majorAlarmAcked }
                                                                                     : props.areaPVDict[`${area["area"]}=${subArea}`] == 2
-                                                                                        ? { root: classes.minorAlarm, selected: classes.minorAlarmSelected }
+                                                                                        ? { root: classes.minorAlarm }
                                                                                         : props.areaPVDict[`${area["area"]}=${subArea}`] == 1
-                                                                                            ? { root: classes.minorAlarmAcked, selected: classes.minorAlarmAckedSelected }
-                                                                                            : {}    // noAlarm
-                                                                            : { root: classes.disabled, selected: classes.disabledSelected }
+                                                                                            ? { root: classes.minorAlarmAcked }
+                                                                                            : { root: classes.noAlarm }    // noAlarm
+                                                                            : { root: classes.disabled }
                                                                         )}
                                                                     >
                                                                         <ListItemText primary={`- ${subArea}`} />

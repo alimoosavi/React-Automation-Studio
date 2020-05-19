@@ -42,6 +42,13 @@ const styles = theme => ({
     borderRadius: 2,
     padding: 1,
   },
+  majorAlarmWarn: {
+    borderRadius: 2,
+    padding: 1,
+    borderStyle: "dotted",
+    borderWidth:"thin",
+    borderColor: red['800']
+  },
   minorAlarm: {
     background: deepOrange['400'],
     borderRadius: 2,
@@ -52,6 +59,13 @@ const styles = theme => ({
     background: 'rgba(255,112,67,0.3)',
     borderRadius: 2,
     padding: 1,
+  },
+  minorAlarmWarn: {
+    borderRadius: 2,
+    padding: 1,
+    borderStyle: "dotted",
+    borderWidth:"thin",
+    borderColor: deepOrange['400']
   },
   noAlarm: {
   },
@@ -173,14 +187,15 @@ class TextUpdateAH extends React.Component {
     const mylabel = this.props.label;
     const usePrecision = this.props.prec;
     const useStringValue = this.props.useStringValue;
+    const { isNormalPV } = this.props;
     const severity = this.state.severity;
     let units = "";
     const initialized = this.state.initialized;
     let value = this.state.value;
     if (initialized) {
       if (this.props.usePvUnits === true) {
-        if (typeof this.state.metadata !== 'undefined') {
-          if (typeof this.state.metadata.units !== 'undefined') {
+        if (this.state.metadata) {
+          if (this.state.metadata.units) {
             units = " " + this.state.metadata.units;
           }
           else {
@@ -202,16 +217,16 @@ class TextUpdateAH extends React.Component {
       }
 
 
-      if (typeof this.props.usePrecision !== 'undefined') {
-        if (this.props.usePrecision == true) {
+      if (this.props.usePrecision !== 'undefined') {
+        if (this.props.usePrecision) {
           if (typeof this.props.prec !== 'undefined') {
             value = parseFloat(value).toFixed(this.props.prec);
           }
           else
-            value = parseFloat(value).toFixed(parseInt(this.state.metadata.precision));
-
+            if (!isNaN(value)) {
+              value = parseFloat(value).toFixed(parseInt(this.state.metadata.precision));
+            }
         }
-
       }
 
       if (typeof this.props.numberFormat !== 'undefined') {
@@ -230,21 +245,34 @@ class TextUpdateAH extends React.Component {
 
     let textFieldClassName;
     if (typeof this.props.alarmSensitive !== 'undefined') {
-      if (this.props.alarmSensitive == true) {
-        if (value == "NO_ALARM") {
-          textFieldClassName = classes.noAlarm;
+      if (this.props.alarmSensitive) {
+        if (isNormalPV) {
+          if (severity == 1) {
+            textFieldClassName = classes.minorAlarmWarn;
+          }
+          else if (severity == 2) {
+            textFieldClassName = classes.majorAlarmWarn;
+          }
+          else {
+            textFieldClassName = classes.noAlarm;
+          }
         }
-        else if (value == "MINOR_ACKED") {
-          textFieldClassName = classes.minorAlarmAcked;
-        }
-        else if (value == "MINOR_ALARM") {
-          textFieldClassName = classes.minorAlarm;
-        }
-        else if (value == "MAJOR_ACKED" || value == "INVALID_ACKED") {
-          textFieldClassName = classes.majorAlarmAcked;
-        }
-        else if (value == "MAJOR_ALARM" || value == "INVALID") {
-          textFieldClassName = classes.majorAlarm;
+        else {
+          if (value == "NO_ALARM") {
+            textFieldClassName = classes.noAlarm;
+          }
+          else if (value == "MINOR_ACKED") {
+            textFieldClassName = classes.minorAlarmAcked;
+          }
+          else if (value == "MINOR_ALARM") {
+            textFieldClassName = classes.minorAlarm;
+          }
+          else if (value == "MAJOR_ACKED" || value == "INVALID_ACKED") {
+            textFieldClassName = classes.majorAlarmAcked;
+          }
+          else if (value == "MAJOR_ALARM" || value == "INVALID") {
+            textFieldClassName = classes.majorAlarm;
+          }
         }
       }
     }

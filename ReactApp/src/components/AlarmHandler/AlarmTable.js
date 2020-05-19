@@ -36,14 +36,14 @@ const useStyles = makeStyles(theme => ({
         overflowY: 'auto',
     },
     disabled: {
-        background: 'grey',
+        backgroundColor: 'grey',
         color: grey['400'],
         fontWeight: 'bold',
     },
     TextFieldSeverityDisabled: {
         borderRadius: 2,
         padding: 1,
-        background: 'grey',
+        backgroundColor: 'grey',
     }
 }));
 
@@ -58,8 +58,8 @@ const AlarmTable = props => {
         myRef.current.scrollTo(0, 0)
     }, [props.areaSelectedIndex])
 
-    const {areaSelectedIndex} = props;
-    const {areaAlarms} = props;
+    const { areaSelectedIndex } = props;
+    const { areaAlarms } = props;
 
     const isTopArea = !areaSelectedIndex.includes("=")
     let currSubArea = ""
@@ -88,13 +88,14 @@ const AlarmTable = props => {
                             ? <TableCell>TEST ALM</TableCell>
                             : null}
                         <TableCell>PV NAME</TableCell>
+                        <TableCell>PV VALUE</TableCell>
                         <TableCell align="center">ALM STATUS</TableCell>
-                        <TableCell align="left">LAST ALM VAL</TableCell>
-                        <TableCell align="left">LAST ALM TIME</TableCell>
-                        <TableCell align="left">LAST ALM ACK TIME</TableCell>
-                        <TableCell align="center">ENABLE</TableCell>
-                        <TableCell align="center">LATCH</TableCell>
-                        <TableCell align="center">NOTIFY</TableCell>
+                        <TableCell align="left" >LAST ALM VAL</TableCell>
+                        <TableCell align="left" >LAST ALM TIME</TableCell>
+                        <TableCell align="left" >LAST ALM ACK TIME</TableCell>
+                        <TableCell align="center" >ENBL</TableCell>
+                        <TableCell align="center" >LAT</TableCell>
+                        <TableCell align="center" >NTFY</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -149,6 +150,7 @@ const AlarmTable = props => {
                                                 <TableCell style={{ borderBottom: 'double' }}></TableCell>
                                                 <TableCell style={{ borderBottom: 'double' }}></TableCell>
                                                 <TableCell style={{ borderBottom: 'double' }}></TableCell>
+                                                <TableCell style={{ borderBottom: 'double' }}></TableCell>
                                                 {props.debug
                                                     ? <TableCell style={{ borderBottom: 'double' }}></TableCell>
                                                     : null}
@@ -171,6 +173,7 @@ const AlarmTable = props => {
                                                 >
                                                     {`${areaName.split('=')[0]} > ${areaName.split('=')[1]}`}
                                                 </TableCell>
+                                                <TableCell style={{ borderBottom: 'double' }}></TableCell>
                                                 <TableCell style={{ borderBottom: 'double' }}></TableCell>
                                                 <TableCell style={{ borderBottom: 'double' }}></TableCell>
                                                 <TableCell style={{ borderBottom: 'double' }}></TableCell>
@@ -235,17 +238,25 @@ const AlarmTable = props => {
                                                 }
                                                 enterDelay={400}
                                             >
-
                                                 <TableCell align="left">
                                                     <TextUpdateAH
                                                         pv={'pva://' + areaAlarms[areaAlarmName]["name"] + ".NAME"}
                                                         disableContextMenu={true}
-
                                                     />
 
                                                 </TableCell>
                                             </Tooltip>
-
+                                            <TableCell align="left">
+                                                <TextUpdateAH
+                                                    pv={'pva://' + areaAlarms[areaAlarmName]["name"]}
+                                                    disableContextMenu={true}
+                                                    useStringValue={true}
+                                                    usePvUnits={true}
+                                                    usePrecision={true}
+                                                    alarmSensitive={true}
+                                                    isNormalPV={true}
+                                                />
+                                            </TableCell>
                                             <TableCell align="center">
                                                 {props.areaEnabled[areaName]
                                                     ? areaAlarms[areaAlarmName]["enable"]
@@ -276,6 +287,7 @@ const AlarmTable = props => {
                                                     </div>
                                                 }
                                             </TableCell>
+
                                             <TableCell align="left">
                                                 <TextUpdateAH
                                                     pv={'pva://' + "alarmIOC:" + areaAlarms[areaAlarmName]["name"] + "V"}
