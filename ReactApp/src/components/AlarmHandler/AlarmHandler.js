@@ -3,14 +3,13 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles';
 import AutomationStudioContext from '../SystemComponents/AutomationStudioContext';
-import RedirectToLogIn from '../SystemComponents/RedirectToLogin.js';
-import SideBar from '../SystemComponents/SideBar';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import InputBase from '@material-ui/core/InputBase';
 
 
 import DataConnection from '../SystemComponents/DataConnection';
+import Layout from '../SystemComponents/Layout';
 import Typography from '@material-ui/core/Typography';
 
 import Menu from '@material-ui/core/Menu';
@@ -20,10 +19,11 @@ import AlarmList from './AlarmList';
 import AlarmTable from './AlarmTable';
 import AlarmLog from './AlarmLog';
 
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import InputIcon from '@material-ui/icons/Input';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
@@ -46,10 +46,8 @@ function isEmpty(obj) {
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(1),
-        // paddingLeft: theme.spacing(8),
-        overflowX: "hidden",
-        overflowY: "hidden",
-        paddingTop: 0
+        margin: 0,
+        width: "100%"
     },
     card: {
         padding: theme.spacing(2),
@@ -289,11 +287,6 @@ const AlarmHandler = props => {
         setAlarmLogDisplayArray(localAlarmLogDisplayArray)
 
     }, [alarmLogDict, alarmLogSelectedKey])
-
-    const logout = () => {
-        localStorage.removeItem('jwt');
-
-    }
 
     const handleDoNothing = () => {
 
@@ -888,6 +881,26 @@ const AlarmHandler = props => {
         return () => clearTimeout(timer);
     }
 
+    const moreVertDrawerItems = (
+        <React.Fragment>
+            <ListItem button>
+                <ListItemIcon >
+                    <ContactPhoneIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={"Configure user notification"} />
+            </ListItem>
+            <ListItem button onClick={handleAlarmTesting}>
+                <ListItemIcon >
+                    {alarmDebug
+                        ? <NotInterestedIcon fontSize="small" />
+                        : <InputIcon fontSize="small" />
+                    }
+                </ListItemIcon>
+                <ListItemText primary={alarmDebug ? "Disable alarm testing/debug" : "Enable alarm testing/debug"} />
+            </ListItem>
+        </React.Fragment>
+    )
+
 
     let alarmPVs = null
     if (alarmIOCPVPrefix !== null && alarmIOCPVSuffix !== null) {
@@ -945,288 +958,253 @@ const AlarmHandler = props => {
         alarmLogHeight = '75vh'
     }
 
-
-
     return (
-        <React.Fragment>
+        <Layout
+            title="Demo Alarm Handler"
+            alignTitle="center"
+            titleVariant="h6"
+            titleTextStyle={{ textTransform: 'uppercase' }}
+            denseAppBar
+            moreVertDrawerItems={moreVertDrawerItems}
+            hideMoreVertDrawerAfterItemClick
+            // hideToggleThemeListItem
+        >
             {alarmPVs}
             {areaPVs}
             {ackPV}
-            <div id="test" className={classes.root}>
-                <div
-                    style={{
-                        display: 'flex',
-                        paddingTop: 20,
-                    }}
-                >
-                    <SideBar />
-                    <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>ALARM HANDLER</div>
-                    <IconButton aria-label="display more actions" color="inherit" onClick={event => handleMoreVertClick(event)}>
-                        <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={moreVertAchorEl}
-                        keepMounted
-                        open={Boolean(moreVertAchorEl)}
-                        onClose={handleMoreVertClose}
-                    >
-                        <MenuItem onClick={handleDoNothing}>
-                            <ListItemIcon >
-                                <ContactPhoneIcon fontSize="small" />
-                            </ListItemIcon>
-                            <Typography variant="inherit">Configure user notification</Typography>
-                        </MenuItem>
-                        <MenuItem onClick={handleAlarmTesting}>
-                            <ListItemIcon >
-                                {alarmDebug
-                                    ? <NotInterestedIcon fontSize="small" />
-                                    : <InputIcon fontSize="small" />
-                                }
-                            </ListItemIcon>
-                            <Typography variant="inherit">
-                                {alarmDebug
-                                    ? "Disable alarm testing/debug"
-                                    : "Enable alarm testing/debug"
-                                }</Typography>
-
-                        </MenuItem>
-                    </Menu>
-                </div>
-                <Grid
-                    container
-                    direction="row"
-                    justify="flex-start"
-                    alignItems="stretch"
-                    spacing={2}
-                    style={{ paddingLeft: 50 }}
-                >
-                    {displayAlarmList
-                        ? <Grid item xs={2}>
-                            <Card className={classes.card}>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="center"
-                                    alignItems="center"
-                                    spacing={2}
-                                >
-                                    <Grid item xs={2} style={{ textAlign: 'right' }}>
-                                        <IconButton
-                                            aria-label="global_alarms"
-                                            style={{ padding: 0 }}
-                                            onClick={() => handleGlobalArea()}
-                                            onContextMenu={(event) => handleIconClick(event)}
-                                        >
-                                            {areaSelectedIndex === 'ALLAREAS'
-                                                ? <PublicIcon color="primary" />
-                                                : <PublicIcon />}
-                                        </IconButton>
-                                        <Menu
-                                            keepMounted
-                                            open={globalContextOpen}
-                                            onClose={() => handleAlarmGlobalContextClose()}
-                                            anchorReference="anchorPosition"
-                                            anchorPosition={contextMouseY !== null && contextMouseX !== null ?
-                                                { top: contextMouseY, left: contextMouseX } : null}
-                                        >
-                                            <MenuItem disabled>GLOBAL</MenuItem>
-                                            <hr />
-                                            {enableAllAreas ?
-                                                <MenuItem
-                                                    onClick={() => handleDisableEnableGlobal(false)}
-                                                >
-                                                    <ListItemIcon >
-                                                        <NotificationsOffIcon fontSize="small" />
-                                                    </ListItemIcon>
-                                                    <Typography variant="inherit">Disable ALLAREAS</Typography>
-                                                </MenuItem> :
-                                                <MenuItem
-                                                    onClick={() => handleDisableEnableGlobal(true)}
-                                                >
-                                                    <ListItemIcon >
-                                                        <NotificationsActiveIcon fontSize="small" />
-                                                    </ListItemIcon>
-                                                    <Typography variant="inherit">Enable ALLAREAS</Typography>
-                                                </MenuItem>
-                                            }
+            <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                alignItems="stretch"
+                spacing={2}
+                className={classes.root}
+            >
+                {displayAlarmList
+                    ? <Grid item xs={2}>
+                        <Card className={classes.card}>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="center"
+                                alignItems="center"
+                                spacing={1}
+                            >
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <IconButton
+                                        aria-label="global_alarms"
+                                        style={{ padding: 0 }}
+                                        onClick={() => handleGlobalArea()}
+                                        onContextMenu={(event) => handleIconClick(event)}
+                                    >
+                                        {areaSelectedIndex === 'ALLAREAS'
+                                            ? <PublicIcon color="primary" />
+                                            : <PublicIcon />}
+                                    </IconButton>
+                                    <Menu
+                                        keepMounted
+                                        open={globalContextOpen}
+                                        onClose={() => handleAlarmGlobalContextClose()}
+                                        anchorReference="anchorPosition"
+                                        anchorPosition={contextMouseY !== null && contextMouseX !== null ?
+                                            { top: contextMouseY, left: contextMouseX } : null}
+                                    >
+                                        <MenuItem disabled>GLOBAL</MenuItem>
+                                        <hr />
+                                        {enableAllAreas ?
                                             <MenuItem
+                                                onClick={() => handleDisableEnableGlobal(false)}
                                             >
                                                 <ListItemIcon >
-                                                    <DoneAllIcon fontSize="small" />
+                                                    <NotificationsOffIcon fontSize="small" />
                                                 </ListItemIcon>
-                                                <Typography variant="inherit">ACK ALLAREAS' alarms</Typography>
+                                                <Typography variant="inherit">Disable ALLAREAS</Typography>
+                                            </MenuItem> :
+                                            <MenuItem
+                                                onClick={() => handleDisableEnableGlobal(true)}
+                                            >
+                                                <ListItemIcon >
+                                                    <NotificationsActiveIcon fontSize="small" />
+                                                </ListItemIcon>
+                                                <Typography variant="inherit">Enable ALLAREAS</Typography>
                                             </MenuItem>
+                                        }
+                                        <MenuItem
+                                        >
+                                            <ListItemIcon >
+                                                <DoneAllIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            <Typography variant="inherit">ACK ALLAREAS' alarms</Typography>
+                                        </MenuItem>
 
-                                        </Menu>
-                                    </Grid>
-                                    <Grid item xs={10}>
-                                        <div style={{ paddingTop: 0, fontSize: 16, fontWeight: 'bold' }}>ALARM AREAS</div>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        {areaNames ?
-                                            <AlarmList
-                                                areaPVDict={areaPVDict}
-                                                areaContextOpen={areaContextOpen}
-                                                areaEnabled={areaEnabled}
-                                                areaNames={areaNames}
-                                                areaSubAreaOpen={areaSubAreaOpen}
-                                                areaSelectedIndex={areaSelectedIndex}
-                                                contextMouseX={contextMouseX}
-                                                contextMouseY={contextMouseY}
-                                                ackAllAreaAlarms={handleAckAllAreaAlarms}
-                                                enableDisableArea={handleEnableDisableArea}
-                                                listItemClick={handleListItemClick}
-                                                listItemRightClick={handleListItemRightClick}
-                                                listItemContextClose={handleListItemContextClose}
-                                            />
-                                            : "No data from database"}
-                                    </Grid>
+                                    </Menu>
                                 </Grid>
-                            </Card>
-                        </Grid>
-                        : <Grid item xs={2}>
-                            <Card className={classes.card}>
-                                <div style={{ fontSize: 16, fontWeight: 'bold' }}>
-                                    CONNECTING TO PVs...
-                                    </div>
-                            </Card>
-                        </Grid>}
-                    {displayAlarmTable ?
-                        <Grid item xs={10} style={{ paddingRight: 32 }}>
-                            <ExpansionPanel
-                                expanded={alarmTableExpand}
-                                onClick={() => handleExpandPanel('alarmTable')}
-                                TransitionProps={{
-                                    onEntered: () => handleExpansionComplete('alarmTable', true),
-                                    onExited: () => handleExpansionComplete('alarmTable', false)
-                                }}
-                            >
-                                <ExpansionPanelSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1bh-content"
-                                    id="panel1bh-header"
-                                >
-                                    <div style={{ display: 'flex', width: '100%' }}>
-                                        <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 20 }}>{`ALARM TABLE: ${areaSelectedName}`}</div>
-                                        <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{
-                                            alarmTableExpand
-                                                ? <div className={classes.search}>
-                                                    <div className={classes.searchIcon}>
-                                                        <SearchIcon />
-                                                    </div>
-                                                    <InputBase
-                                                        placeholder="Search alarm table…"
-                                                        classes={{
-                                                            root: classes.inputRoot,
-                                                            input: classes.inputInput,
-                                                        }}
-                                                        inputProps={{ 'aria-label': 'search' }}
-                                                        onClick={event => event.stopPropagation()}
-                                                        onFocus={event => event.stopPropagation()}
-                                                        onChange={event => handleSearchAlarmTable(event)}
-                                                        onBlur={() => { setAlarmTableSearchStringStore(''); setAlarmTableSearchString('') }}
-                                                        value={alarmTableSearchStringStore}
-                                                    />
-                                                </div>
-                                                : '[click to show]'
-                                        }</div>
-                                    </div>
-
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    {areaNames
-                                        ? <AlarmTable
-                                            debug={alarmDebug}
-                                            alarmPVDict={alarmPVDict}
-                                            alarmRowSelected={alarmRowSelected}
-                                            alarmContextOpen={alarmContextOpen}
+                                <Grid item xs={10}>
+                                    <div style={{ paddingTop: 0, fontSize: 16, fontWeight: 'bold' }}>ALARM AREAS</div>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {areaNames ?
+                                        <AlarmList
+                                            areaPVDict={areaPVDict}
+                                            areaContextOpen={areaContextOpen}
+                                            areaEnabled={areaEnabled}
+                                            areaNames={areaNames}
+                                            areaSubAreaOpen={areaSubAreaOpen}
                                             areaSelectedIndex={areaSelectedIndex}
-                                            areaAlarms={areaAlarms}
                                             contextMouseX={contextMouseX}
                                             contextMouseY={contextMouseY}
-                                            areaEnabled={areaEnabled}
-                                            height={alarmTableHeight}
-                                            alarmTableSearchString={alarmTableSearchString}
-                                            alarmAcknowledge={handleAlarmAcknowledge}
-                                            alarmContextClose={handleAlarmContextClose}
-                                            itemChecked={handleTableItemCheck}
-                                            tableItemRightClick={handleTableItemRightClick}
-                                            tableRowClick={handleTableRowClick}
+                                            ackAllAreaAlarms={handleAckAllAreaAlarms}
+                                            enableDisableArea={handleEnableDisableArea}
+                                            listItemClick={handleListItemClick}
+                                            listItemRightClick={handleListItemRightClick}
+                                            listItemContextClose={handleListItemContextClose}
                                         />
                                         : "No data from database"}
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
-                            <ExpansionPanel
-                                expanded={alarmLogExpand}
-                                onClick={() => handleExpandPanel('alarmLog')}
-                                TransitionProps={{
-                                    onEntered: () => handleExpansionComplete('alarmLog', true),
-                                    onExited: () => handleExpansionComplete('alarmLog', false)
-                                }}
-                            >
-                                <ExpansionPanelSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1bh-content"
-                                    id="panel1bh-header"
-                                >
-                                    <div style={{ display: 'flex', width: '100%' }}>
-                                        <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 20 }}>{`ALARM LOG: ${alarmLogSelectedName}`}</div>
-                                        <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{
-                                            alarmLogExpand
-                                                ? <div className={classes.search}>
-                                                    <div className={classes.searchIcon}>
-                                                        <SearchIcon />
-                                                    </div>
-                                                    <InputBase
-                                                        placeholder="Search alarm log…"
-                                                        classes={{
-                                                            root: classes.inputRoot,
-                                                            input: classes.inputInput,
-                                                        }}
-                                                        inputProps={{ 'aria-label': 'search' }}
-                                                        onClick={event => event.stopPropagation()}
-                                                        onFocus={event => event.stopPropagation()}
-                                                        onChange={event => handleSearchAlarmLog(event)}
-                                                        onBlur={() => { setAlarmLogSearchStringStore(''); setAlarmLogSearchString('') }}
-                                                        value={alarmLogSearchStringStore}
-                                                    />
-                                                </div>
-                                                : '[click to show]'
-                                        }
-                                        </div>
+                                </Grid>
+                            </Grid>
+                        </Card>
+                    </Grid>
+                    : <Grid item xs={2}>
+                        <Card className={classes.card}>
+                            <div style={{ fontSize: 16, fontWeight: 'bold' }}>
+                                CONNECTING TO PVs...
                                     </div>
+                        </Card>
+                    </Grid>}
+                {displayAlarmTable ?
+                    <Grid item xs={10} >
+                        <ExpansionPanel
+                            expanded={alarmTableExpand}
+                            onClick={() => handleExpandPanel('alarmTable')}
+                            TransitionProps={{
+                                onEntered: () => handleExpansionComplete('alarmTable', true),
+                                onExited: () => handleExpansionComplete('alarmTable', false)
+                            }}
+                        >
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1bh-content"
+                                id="panel1bh-header"
+                            >
+                                <div style={{ display: 'flex', width: '100%' }}>
+                                    <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 20 }}>{`ALARM TABLE: ${areaSelectedName}`}</div>
+                                    <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{
+                                        alarmTableExpand
+                                            ? <div className={classes.search}>
+                                                <div className={classes.searchIcon}>
+                                                    <SearchIcon />
+                                                </div>
+                                                <InputBase
+                                                    placeholder="Search alarm table…"
+                                                    classes={{
+                                                        root: classes.inputRoot,
+                                                        input: classes.inputInput,
+                                                    }}
+                                                    inputProps={{ 'aria-label': 'search' }}
+                                                    onClick={event => event.stopPropagation()}
+                                                    onFocus={event => event.stopPropagation()}
+                                                    onChange={event => handleSearchAlarmTable(event)}
+                                                    onBlur={() => { setAlarmTableSearchStringStore(''); setAlarmTableSearchString('') }}
+                                                    value={alarmTableSearchStringStore}
+                                                />
+                                            </div>
+                                            : '[click to show]'
+                                    }</div>
+                                </div>
 
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <AlarmLog
-                                        height={alarmLogHeight}
-                                        alarmLogDisplayArray={alarmLogDisplayArray}
-                                        alarmLogSelectedKey={alarmLogSelectedKey}
-                                        alarmLogSearchString={alarmLogSearchString}
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                {areaNames
+                                    ? <AlarmTable
+                                        debug={alarmDebug}
+                                        alarmPVDict={alarmPVDict}
+                                        alarmRowSelected={alarmRowSelected}
+                                        alarmContextOpen={alarmContextOpen}
+                                        areaSelectedIndex={areaSelectedIndex}
+                                        areaAlarms={areaAlarms}
+                                        contextMouseX={contextMouseX}
+                                        contextMouseY={contextMouseY}
+                                        areaEnabled={areaEnabled}
+                                        height={alarmTableHeight}
+                                        alarmTableSearchString={alarmTableSearchString}
+                                        alarmAcknowledge={handleAlarmAcknowledge}
+                                        alarmContextClose={handleAlarmContextClose}
+                                        itemChecked={handleTableItemCheck}
+                                        tableItemRightClick={handleTableItemRightClick}
+                                        tableRowClick={handleTableRowClick}
                                     />
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
-                            {/* <Slide direction="left" in={true} mountOnEnter unmountOnExit>
+                                    : "No data from database"}
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        <ExpansionPanel
+                            expanded={alarmLogExpand}
+                            onClick={() => handleExpandPanel('alarmLog')}
+                            TransitionProps={{
+                                onEntered: () => handleExpansionComplete('alarmLog', true),
+                                onExited: () => handleExpansionComplete('alarmLog', false)
+                            }}
+                        >
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1bh-content"
+                                id="panel1bh-header"
+                            >
+                                <div style={{ display: 'flex', width: '100%' }}>
+                                    <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 20 }}>{`ALARM LOG: ${alarmLogSelectedName}`}</div>
+                                    <div style={{ fontSize: 16, fontWeight: 'bold', flexGrow: 1 }}>{
+                                        alarmLogExpand
+                                            ? <div className={classes.search}>
+                                                <div className={classes.searchIcon}>
+                                                    <SearchIcon />
+                                                </div>
+                                                <InputBase
+                                                    placeholder="Search alarm log…"
+                                                    classes={{
+                                                        root: classes.inputRoot,
+                                                        input: classes.inputInput,
+                                                    }}
+                                                    inputProps={{ 'aria-label': 'search' }}
+                                                    onClick={event => event.stopPropagation()}
+                                                    onFocus={event => event.stopPropagation()}
+                                                    onChange={event => handleSearchAlarmLog(event)}
+                                                    onBlur={() => { setAlarmLogSearchStringStore(''); setAlarmLogSearchString('') }}
+                                                    value={alarmLogSearchStringStore}
+                                                />
+                                            </div>
+                                            : '[click to show]'
+                                    }
+                                    </div>
+                                </div>
+
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <AlarmLog
+                                    height={alarmLogHeight}
+                                    alarmLogDisplayArray={alarmLogDisplayArray}
+                                    alarmLogSelectedKey={alarmLogSelectedKey}
+                                    alarmLogSearchString={alarmLogSearchString}
+                                />
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        {/* <Slide direction="left" in={true} mountOnEnter unmountOnExit>
                                     <Paper elevation={4} style={{ zIndex: 1, position: 'relative' }}>
                                         Hello
                                     </Paper>
                                 </Slide> */}
-                        </Grid>
-                        :
-                        <Grid item xs={10} style={{ paddingRight: 32 }}>
-                            <Card className={classes.card}>
-                                <div style={{ fontSize: 16, fontWeight: 'bold' }}>
-                                    CONNECTING TO PVs...
+                    </Grid>
+                    :
+                    <Grid item xs={10} >
+                        <Card className={classes.card}>
+                            <div style={{ fontSize: 16, fontWeight: 'bold' }}>
+                                CONNECTING TO PVs...
                                     </div>
-                            </Card>
-                        </Grid>
-                    }
+                        </Card>
+                    </Grid>
+                }
 
-                </Grid>
-                <RedirectToLogIn />
-            </div>
-        </React.Fragment >
+            </Grid>
+            {/* </div> */}
+        </Layout>
     )
 }
 
