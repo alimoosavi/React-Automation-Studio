@@ -34,13 +34,7 @@ const themeProps = {
     lightLineColors: ['#12939A', '#79C7E3', '#1A3177', '#FF9833', '#EF5D28'],
     darkLineColors: ['#ff9800', '#f44336', '#9c27b0', '#3f51b5', '#e91e63'],
     typography: {
-        useNextVariants: true,
-        fontFamily: [
-
-            'Roboto',
-
-
-        ].join(','),
+        
     },
 }
 
@@ -53,4 +47,3 @@ export const darkTheme = {
     palette: { ...darkPalette },
     ...themeProps
 }
-

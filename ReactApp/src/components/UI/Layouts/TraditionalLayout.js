@@ -16,6 +16,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import Card from '@material-ui/core/Card';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -40,6 +42,10 @@ function ElevationScroll(props) {
 }
 
 const useStyles = makeStyles(theme => ({
+    root: {
+        margin: 0,
+        padding: 0
+    },
     menuButton: {
         marginRight: 20,
         flexGrow: 1
@@ -55,6 +61,14 @@ const useStyles = makeStyles(theme => ({
         textAlign: props.alignTitle,
         flexGrow: 1000,
         ...props.titleTextStyle
+    }),
+    bottomNavigation: props => ({
+        width: '100%',
+        position: 'fixed',
+        bottom: 0,
+        height: props.footerHeight,
+        borderRadius: 0,
+        boxShadow: theme.shadows[24]
     })
 }));
 
@@ -105,6 +119,7 @@ const TraditionalLayout = (props) => {
             }
         </div>
     )
+
     const moreVertDrawerItems = (
         <div className={classes.drawerItems}>
             <List onClick={props.hideMoreVertDrawerAfterItemClick ? () => setShowMVDrawer(false) : null}>
@@ -126,8 +141,9 @@ const TraditionalLayout = (props) => {
             </List>
         </div >
     )
+
     return (
-        <React.Fragment>
+        <div className={classes.root}>
             <CssBaseline />
             <ElevationScroll {...props}>
                 <AppBar color="inherit">
@@ -183,15 +199,23 @@ const TraditionalLayout = (props) => {
                 {props.children}
                 {/* ---Children--- */}
             </main>
+            {props.showFooter &&
+                <React.Fragment>
+                    <BottomNavigation className={classes.bottomNavigation} component={Card}>
+                        {props.footerContents}
+                    </BottomNavigation>
+                    <div style={{ marginBottom: props.footerHeight }} />
+                </React.Fragment>
+            }
             <RedirectToLogIn />
-        </React.Fragment>
+        </div>
     );
 };
 
 TraditionalLayout.propTypes = {
     /** Title to be displayed in the app bar **/
     title: PropTypes.string,
-    /** Alignment of the title in the app bar, 'left' if not defined **/
+    /** Alignment of the title in the app bar **/
     alignTitle: PropTypes.oneOf(['left', 'center', 'right']),
     /** Typography variant of the title text **/
     titleVariant: PropTypes.string,
@@ -213,6 +237,12 @@ TraditionalLayout.propTypes = {
     hideDrawerAfterItemClick: PropTypes.bool,
     /** Directive to hide more vert side drawer once item on it has been clicked **/
     hideMoreVertDrawerAfterItemClick: PropTypes.bool,
+    /** Directive to show Footer element **/
+    showFooter: PropTypes.bool,
+    /** Height of the Footer element **/
+    footerHeight: PropTypes.number,
+    /** Items to be displayed in the Footer element **/
+    footerContents: PropTypes.element,
 }
 
 TraditionalLayout.defaultProps = {
@@ -228,6 +258,9 @@ TraditionalLayout.defaultProps = {
     hideHomeDrawerButton: false,
     hideDrawerAfterItemClick: false,
     hideMoreVertDrawerAfterItemClick: false,
+    showFooter: false,
+    footerHeight: 30,
+    footerContents: null
 }
 
 export default TraditionalLayout;

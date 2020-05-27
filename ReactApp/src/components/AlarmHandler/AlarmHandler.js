@@ -51,24 +51,10 @@ const useStyles = makeStyles(theme => ({
     },
     card: {
         padding: theme.spacing(2),
+        margin: 0,
         height: "100%",
         overflowX: "default",
         overflowY: "default",
-    },
-    center: {
-        margin: 'auto',
-        width: '100%',
-        height: '100%'
-
-    },
-    button: {
-        marginTop: '10px',
-        paddingTop: '10px',
-        width: '100%',
-
-    },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
     },
     search: {
         position: 'relative',
