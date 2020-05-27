@@ -23,8 +23,8 @@ import Home from '@material-ui/icons/Home';
 import MoreVertRoundedIcon from '@material-ui/icons/MoreVertRounded';
 import InvertColorsIcon from '@material-ui/icons/InvertColors';
 
-import AutomationStudioContext from './AutomationStudioContext';
-import RedirectToLogIn from '../SystemComponents/RedirectToLogin.js';
+import AutomationStudioContext from '../../SystemComponents/AutomationStudioContext';
+import RedirectToLogIn from '../../SystemComponents/RedirectToLogin.js';
 
 function ElevationScroll(props) {
     const { children, window } = props;
@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     })
 }));
 
-const Layout = (props) => {
+const TraditionalLayout = (props) => {
 
     const classes = useStyles(props)
     const context = useContext(AutomationStudioContext)
@@ -188,7 +188,7 @@ const Layout = (props) => {
     );
 };
 
-Layout.propTypes = {
+TraditionalLayout.propTypes = {
     /** Title to be displayed in the app bar **/
     title: PropTypes.string,
     /** Alignment of the title in the app bar, 'left' if not defined **/
@@ -215,7 +215,7 @@ Layout.propTypes = {
     hideMoreVertDrawerAfterItemClick: PropTypes.bool,
 }
 
-Layout.defaultProps = {
+TraditionalLayout.defaultProps = {
     title: null,
     alignTitle: 'left',
     titleVariant: "h6",
@@ -230,4 +230,4 @@ Layout.defaultProps = {
     hideMoreVertDrawerAfterItemClick: false,
 }
 
-export default Layout;
+export default TraditionalLayout;
