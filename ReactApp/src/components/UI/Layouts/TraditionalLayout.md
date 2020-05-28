@@ -1,0 +1,101 @@
+Simple TraditionalLayout with default app bar styling, drawers and no footer.
+```js
+import Content from '../../../docs/content/LayoutContent.js';
+
+    <TraditionalLayout
+        title="My App Title"
+    >
+        <Content/>   
+    </TraditionalLayout>
+```
+
+TraditionalLayout with styled app bar, footer and custom footerContent.
+```js
+import Content from '../../../docs/content/LayoutContent.js'
+import AccountCircle from '@material-ui/icons/AccountCircle'
+
+const username = 'Guest'
+
+const footerContents=(
+    <div style={{width:"100%",display:'flex'}}>
+        <div style={{flexGrow:100, color:"white",marginTop:'0.65em',marginLeft:'1em'}}>
+            React Automation Studio Style Guide
+        </div>
+        <div style={{flexGrow:1, color:"white",marginLeft:'auto',marginRight:'0.5em',marginTop:'0.65em'}}>
+            {username}
+        </div>
+        <div style={{flexGrow:1, color:"white",marginLeft:'auto',marginRight:'1em',marginTop:'0.5em'}}>
+            <AccountCircle/>
+        </div>
+    </div>
+)
+
+;<TraditionalLayout
+    title="My App Title"
+    alignTitle="center"
+    denseAppBar
+    showFooter
+    footerHeight={40}
+    footerContents={footerContents}
+>
+    <Content/>   
+</TraditionalLayout>
+```
+
+TraditionalLayout with no moreVert drawer and custom items in side drawer
+```js
+import Content from '../../../docs/content/LayoutContent.js'
+
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import TouchAppIcon from '@material-ui/icons/TouchApp';
+
+const username = 'Guest'
+
+const handleClickMe2 = () => {
+    alert("Thank you for clicking me 2!")
+}
+
+const drawerItems=(
+    <React.Fragment>
+        <ListItem button onClick={()=>alert("Thank you for clicking me!")}>
+            <ListItemIcon >
+                <TouchAppIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={"Click me!"} />
+        </ListItem>
+        <ListItem button onClick={handleClickMe2}>
+            <ListItemIcon >
+                <TouchAppIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={"Click me 2!"} />
+        </ListItem>
+    </React.Fragment>
+)
+
+;<TraditionalLayout
+    title="My App Title"
+    alignTitle="center"
+    denseAppBar
+    hideMoreVertMenu
+    drawerItems={drawerItems}
+>
+    <Content/>   
+</TraditionalLayout>
+```
+
+TraditionalLayout that hides drawers after item click
+```js
+import Content from '../../../docs/content/LayoutContent.js'
+
+;<TraditionalLayout
+    title="My App Title"
+    alignTitle="center"
+    denseAppBar
+    hideDrawerAfterItemClick
+    hideMoreVertDrawerAfterItemClick
+>
+    <Content/>   
+</TraditionalLayout>
+```

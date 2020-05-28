@@ -42,10 +42,6 @@ function ElevationScroll(props) {
 }
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        margin: 0,
-        padding: 0
-    },
     menuButton: {
         marginRight: 20,
         flexGrow: 1
@@ -72,27 +68,42 @@ const useStyles = makeStyles(theme => ({
     })
 }));
 
+/**
+* The TraditionalLayout Component is a wrapper on the Material-UI AppBar, BottomNavigation and Drawer components. The TraditionalLayout is intended to wrap content to provide a consistent look and feel across all interfaces.<br/><br/>
+* The TraditionalLayout component is implemented with an elevated appbar (content scrolls under appbar), fixed footer (footer fixed to bottom of window) and swipeable drawers (swipe from left/right on touch devices).<br/><br/> 
+* When used outside of the styleguide the appbar and footer will span the entire window.<br/><br/>
+
+*/
 const TraditionalLayout = (props) => {
 
     const classes = useStyles(props)
+    const theme = useTheme()
+
+    const themeType = theme.palette.type
+
     const context = useContext(AutomationStudioContext)
+    const notInStyleGuide = context.styleGuideRedirect
     const socket = context.socket
-    const username = context.userData.username
+
+    const username = notInStyleGuide ? context.userData.username : "Guest"
 
     const [showDrawer, setShowDrawer] = useState(false)
     const [showMVDrawer, setShowMVDrawer] = useState(false)
 
     const handleLogout = () => {
-        socket.emit('disconnect', { "goodebye": "see you later" });
-        socket.close()
-        context.logout();
+        if (notInStyleGuide) {
+            socket.emit('disconnect', { "goodebye": "see you later" });
+            socket.close()
+            context.logout();
+        }
+
     }
 
     const drawerItems = (
         <div className={classes.drawerItems}>
             <List onClick={props.hideDrawerAfterItemClick ? () => setShowDrawer(false) : null}>
                 {!props.hideHomeDrawerButton &&
-                    <ListItem button component={Link} to="/" >
+                    <ListItem button component={notInStyleGuide ? Link : 'div'} to="/" >
                         <ListItemIcon><Home /></ListItemIcon>
                         <ListItemText primary={"Home"} />
                     </ListItem>
@@ -103,20 +114,21 @@ const TraditionalLayout = (props) => {
                 {/* Drawer list items from user */}
                 {props.drawerItems}
                 {/* Drawer list items from user */}
+                {process.env.REACT_APP_EnableLogin === 'true' &&
+                    <React.Fragment>
+                        <Divider />
+                        <ListItem>
+                            <ListItemIcon><AccountCircle /></ListItemIcon>
+                            <ListItemText style={{ textOverflow: 'ellipsis' }} primary={username} />
+                        </ListItem>
+                        <ListItem button onClick={handleLogout} component={notInStyleGuide ? Link : 'div'} to="/LogIn" >
+                            <ListItemIcon><Logout /></ListItemIcon>
+                            <ListItemText primary={"Log Out"} />
+                        </ListItem>
+                    </React.Fragment>
+                }
             </List>
-            {process.env.REACT_APP_EnableLogin === 'true' &&
-                <React.Fragment>
-                    <Divider />
-                    <ListItem button >
-                        <ListItemIcon><AccountCircle /></ListItemIcon>
-                        <ListItemText style={{ textOverflow: 'ellipsis' }} primary={username} />
-                    </ListItem>
-                    <ListItem button onClick={handleLogout} component={Link} to="/LogIn" >
-                        <ListItemIcon><Logout /></ListItemIcon>
-                        <ListItemText primary={"Log Out"} />
-                    </ListItem>
-                </React.Fragment>
-            }
+
         </div>
     )
 
@@ -143,10 +155,10 @@ const TraditionalLayout = (props) => {
     )
 
     return (
-        <div className={classes.root}>
+        <React.Fragment>
             <CssBaseline />
             <ElevationScroll {...props}>
-                <AppBar color="inherit">
+                <AppBar color={themeType === 'dark' ? "inherit" : "primary"} position={notInStyleGuide ? undefined : "static"}>
                     <Toolbar variant={props.denseAppBar ? "dense" : undefined} style={{ display: "flex" }}>
                         <IconButton
                             onClick={() => setShowDrawer(true)}
@@ -193,7 +205,7 @@ const TraditionalLayout = (props) => {
                     </Toolbar>
                 </AppBar>
             </ElevationScroll>
-            <div style={{ marginBottom: props.denseAppBar ? "3em" : "4em" }} />
+            {notInStyleGuide && <div style={{ marginBottom: props.denseAppBar ? "3em" : "4em" }} />}
             <main>
                 {/* ---Children--- */}
                 {props.children}
@@ -201,14 +213,21 @@ const TraditionalLayout = (props) => {
             </main>
             {props.showFooter &&
                 <React.Fragment>
-                    <BottomNavigation className={classes.bottomNavigation} component={Card}>
+                    <BottomNavigation
+                        className={classes.bottomNavigation}
+                        component={Card}
+                        style={{
+                            position: notInStyleGuide ? undefined : "relative",
+                            backgroundColor: themeType === 'dark' ? undefined : theme.palette.primary.main
+                        }}
+                    >
                         {props.footerContents}
                     </BottomNavigation>
-                    <div style={{ marginBottom: props.footerHeight }} />
+                    {notInStyleGuide && <div style={{ marginBottom: props.footerHeight }} />}
                 </React.Fragment>
             }
-            <RedirectToLogIn />
-        </div>
+            {notInStyleGuide && <RedirectToLogIn />}
+        </React.Fragment>
     );
 };
 
@@ -263,4 +282,4 @@ TraditionalLayout.defaultProps = {
     footerContents: null
 }
 
-export default TraditionalLayout;
+export default React.memo(TraditionalLayout);
