@@ -957,25 +957,23 @@ def globalCollectionWatch():
                     if (key == "enableAllAreas"):
                         # print(areaKey, "area enable changed!")
                         for area in areaList:
-                            if ("=" in area): 
+                            if ("=" in area):
                                 areaKey = area
                                 evaluateAreaPVs(areaKey, True)
-                            else:
-                                topArea = area
-                                # Log to history
-                                msg = "ENABLED" if change[key] else "DISABLED"
-                                entry = {"timestamp": timestamp, "entry": " ".join(
-                                    [topArea, "area", msg])}
-                                # print(timestamp, topArea,
-                                #   "area", msg)
-                                client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
-                                    {'identifier': topArea},
-                                    {'$push': {
-                                        'history': {
-                                            '$each': [entry],
-                                            '$position': 0
-                                        }
-                                    }})
+                        # Log to history
+                        msg = "ENABLED" if change[key] else "DISABLED"
+                        entry = {"timestamp": timestamp, "entry": " ".join(
+                            ["ALL AREAS", msg])}
+                        # print(timestamp, topArea,
+                        #   "area", msg)
+                        client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
+                            {'identifier': "_GLOBAL"},
+                            {'$push': {
+                                'history': {
+                                    '$each': [entry],
+                                    '$position': 0
+                                }
+                            }})
 
             except:
                 print("No relevant lobal var updates")

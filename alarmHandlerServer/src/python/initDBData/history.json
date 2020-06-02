@@ -1,4 +1,6 @@
 [
+    { "identifier": "_GLOBAL", "history": [] },
+
     { "identifier": "BEAMLINE DEMO", "history": [] },
     { "identifier": "BEAMLINE DEMO=POWER SUPPLIES", "history": [] },
     { "identifier": "BEAMLINE DEMO=POWER SUPPLIES*testIOC:PS1:Readback", "history": [] },

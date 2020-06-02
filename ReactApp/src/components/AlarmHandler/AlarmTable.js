@@ -71,7 +71,8 @@ const AlarmTable = props => {
         majorAlarm: classes.TextFieldSeverityDisabled,
         majorAlarmAcked: classes.TextFieldSeverityDisabled,
         minorAlarm: classes.TextFieldSeverityDisabled,
-        minorAlarmAcked: classes.TextFieldSeverityDisabled
+        minorAlarmAcked: classes.TextFieldSeverityDisabled,
+        noAlarm: classes.TextFieldSeverityDisabled
     };
 
     return (
