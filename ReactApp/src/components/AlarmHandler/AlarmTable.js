@@ -188,7 +188,7 @@ const AlarmTable = props => {
                                             : null}
                                         <TableRow
                                             // key={areaAlarmName}
-                                            hover={props.areaEnabled[areaName]}
+                                            hover={props.areaEnabled[areaName] && props.enableAllAreas}
                                             onContextMenu={event => props.tableItemRightClick(event, areaAlarmName)}
                                             selected={props.alarmRowSelected[areaAlarmName]}
                                             onClick={event => props.tableRowClick(event, `${areaName}*${areaAlarms[areaAlarmName]["name"]}`)}
@@ -258,33 +258,22 @@ const AlarmTable = props => {
                                                 />
                                             </TableCell>
                                             <TableCell align="center">
-                                                {props.areaEnabled[areaName]
-                                                    ? areaAlarms[areaAlarmName]["enable"]
-                                                        ?
-                                                        <TextUpdateAH
-                                                            pv={'pva://' + "alarmIOC:" + areaAlarms[areaAlarmName]["name"] + "A"}
-                                                            useStringValue={true}
-                                                            alarmSensitive={true}
-                                                            disableContextMenu={true}
-                                                        />
-                                                        : <div className={classes.disabled}>
-                                                            <TextUpdateAH
-                                                                pv={'pva://' + "alarmIOC:" + areaAlarms[areaAlarmName]["name"] + "A"}
-                                                                useStringValue={true}
-                                                                alarmSensitive={true}
-                                                                disableContextMenu={true}
-                                                                classes={textFieldClasses}
-                                                            />
-                                                        </div>
-                                                    : <div className={classes.disabled}>
-                                                        <TextUpdateAH
-                                                            pv={'pva://' + "alarmIOC:" + areaAlarms[areaAlarmName]["name"] + "A"}
-                                                            useStringValue={true}
-                                                            alarmSensitive={true}
-                                                            disableContextMenu={true}
-                                                            classes={textFieldClasses}
-                                                        />
-                                                    </div>
+                                                {props.enableAllAreas && props.areaEnabled[areaName] && areaAlarms[areaAlarmName]["enable"]
+                                                    ?
+                                                    <TextUpdateAH
+                                                        pv={'pva://' + "alarmIOC:" + areaAlarms[areaAlarmName]["name"] + "A"}
+                                                        useStringValue={true}
+                                                        alarmSensitive={true}
+                                                        disableContextMenu={true}
+                                                    />
+                                                    :
+                                                    <TextUpdateAH
+                                                        pv={'pva://' + "alarmIOC:" + areaAlarms[areaAlarmName]["name"] + "A"}
+                                                        useStringValue={true}
+                                                        alarmSensitive={true}
+                                                        disableContextMenu={true}
+                                                        classes={textFieldClasses}
+                                                    />
                                                 }
                                             </TableCell>
 
@@ -308,7 +297,7 @@ const AlarmTable = props => {
                                             <TableCell align="center">
                                                 <Checkbox
                                                     style={{ padding: 0, margin: 0 }}
-                                                    disabled={!props.areaEnabled[areaName]}
+                                                    disabled={!props.areaEnabled[areaName] || !props.enableAllAreas}
                                                     value={areaAlarms[areaAlarmName]["enable"]}
                                                     color="primary"
                                                     checked={areaAlarms[areaAlarmName]["enable"]}
@@ -318,7 +307,7 @@ const AlarmTable = props => {
                                             <TableCell align="center">
                                                 <Checkbox
                                                     style={{ padding: 0, margin: 0 }}
-                                                    disabled={!props.areaEnabled[areaName]}
+                                                    disabled={!props.areaEnabled[areaName] || !props.enableAllAreas}
                                                     value={areaAlarms[areaAlarmName]["latch"]}
                                                     color="primary"
                                                     checked={areaAlarms[areaAlarmName]["latch"]}
@@ -328,7 +317,7 @@ const AlarmTable = props => {
                                             <TableCell align="center">
                                                 <Checkbox
                                                     style={{ padding: 0, margin: 0 }}
-                                                    disabled={!props.areaEnabled[areaName]}
+                                                    disabled={!props.areaEnabled[areaName] || !props.enableAllAreas}
                                                     value={areaAlarms[areaAlarmName]["notify"]}
                                                     color="primary"
                                                     checked={areaAlarms[areaAlarmName]["notify"]}

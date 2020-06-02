@@ -308,7 +308,7 @@ class TextUpdateAH extends React.Component {
             }}
           />
           {initialized === true &&
-            <span className={textFieldClassName} style={{ margin: 0, padding: 0 }}>
+            <span className={textFieldClassName} style={{ margin: 0, paddingLeft: 5 ,paddingRight: 5 }}>
               {usePvLabel === true ? this.state['label'] + ': ' : this.props.label}
               {value} {units}
             </span>
