@@ -9,7 +9,7 @@ import InputBase from '@material-ui/core/InputBase';
 
 
 import DataConnection from '../SystemComponents/DataConnection';
-import Layout from '../UI/Layouts/TraditionalLayout';
+import Layout from '../UI/Layout/ComposedLayouts/TraditionalLayout';
 import Typography from '@material-ui/core/Typography';
 
 import Menu from '@material-ui/core/Menu';
