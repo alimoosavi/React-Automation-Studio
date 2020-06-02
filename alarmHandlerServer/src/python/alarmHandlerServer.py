@@ -943,6 +943,21 @@ def pvCollectionWatch():
                 print("no relevant updates")
 
 
+def globalCollectionWatch():
+    with client[MONGO_INITDB_ALARM_DATABASE].glob.watch() as stream:
+        for change in stream:
+            # print(change)
+            try:
+                enableAllAreas = change["updateDescription"]["updatedFields"]["enableAllAreas"]
+                if(enableAllAreas):
+                    print("Enable all areas")
+                else:
+                    print("Disable all areas")
+
+            except:
+                print("Error in updating global vars")
+
+
 def main():
     getListOfPVNames()
     startDemoIOC(runDemoIOC)
@@ -963,6 +978,8 @@ def main():
     # Initialise database collection watch on pvs
     # For enable change on pv to reevaluate area pvs
     _thread.start_new_thread(pvCollectionWatch, ())
+    # For change to global enable to reevaluate area pvs
+    _thread.start_new_thread(globalCollectionWatch, ())
 
     # Final debug outputs
     # print('areaPVDict', areaPVDict)

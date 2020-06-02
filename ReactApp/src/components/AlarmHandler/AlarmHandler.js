@@ -130,8 +130,6 @@ const AlarmHandler = props => {
     const [alarmTableExpand, setAlarmTableExpand] = useState(true)
     const [alarmTableIsExpanded, setAlarmTableIsExpanded] = useState(true)
     const [alarmLogSelectedName, setAlarmLogSelectedName] = useState('')
-    const [moreVertMenuShow, setMoreVertMenuShow] = useState(false)
-    const [moreVertAchorEl, setMoreVertAchorEl] = useState(null)
     const [alarmDebug, setAlarmDebug] = useState(false)
     const [alarmAckField, setAlarmAckField] = useState([])
     const [alarmAckFieldTrig, setAlarmAckFieldTrig] = useState(false)
@@ -202,7 +200,7 @@ const AlarmHandler = props => {
         });
         socket.on('databaseData:' + localDbConfigURL, handleDbConfig);
 
-        colName = "global"
+        colName = "glob"
         const localDbGlobalURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName + ":Parameters:{}"
         setDbGlobalURL(localDbGlobalURL)
 
@@ -300,7 +298,7 @@ const AlarmHandler = props => {
 
         const ALARM_DATABASE = "ALARM_DATABASE"
         const dbName = "demoAlarmDatabase"
-        const colName = "global"
+        const colName = "glob"
         const dbURL = "mongodb://" + ALARM_DATABASE + ":" + dbName + ":" + colName
 
         const id = enableAllAreasId
@@ -378,17 +376,8 @@ const AlarmHandler = props => {
         }
     }
 
-    const handleMoreVertClick = (event) => {
-        setMoreVertAchorEl(event.currentTarget)
-    }
-
-    const handleMoreVertClose = (event) => {
-        setMoreVertAchorEl(null)
-    }
-
     const handleAlarmTesting = (event) => {
         setAlarmDebug(!alarmDebug)
-        handleMoreVertClose()
     }
 
     const handleSimplePrint = (value, pvname) => {

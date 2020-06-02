@@ -60,7 +60,7 @@ dbnames = client.list_database_names()
 if (MONGO_INITDB_ALARM_DATABASE not in dbnames):
     db = client[MONGO_INITDB_ALARM_DATABASE]
     print("Instantiating database:", MONGO_INITDB_ALARM_DATABASE)
-    colnames = ['config', 'global', 'history', 'pvs', 'users']
+    colnames = ['config', 'glob', 'history', 'pvs', 'users']
     for col in colnames:
         collection = db[col]
         with open('./initDBData/' + col + '.json') as f:
