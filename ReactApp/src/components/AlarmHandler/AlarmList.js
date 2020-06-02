@@ -184,7 +184,7 @@ const AlarmList = props => {
                                             // field(FVST, "INVALID_ACKED")
                                             // field(SXST, "INVALID")
 
-                                            classes={(props.areaEnabled[`${area["area"]}`]
+                                            classes={(props.areaEnabled[`${area["area"]}`] && props.enableAllAreas
                                                 ? props.areaPVDict[`${area["area"]}`] == 6 || props.areaPVDict[`${area["area"]}`] == 4
                                                     ? { root: classes.majorAlarm }
                                                     : props.areaPVDict[`${area["area"]}`] == 5 || props.areaPVDict[`${area["area"]}`] == 3
@@ -204,38 +204,42 @@ const AlarmList = props => {
 
                                         </ListItem>
                                         {
-                                            props.areaContextOpen[`${area["area"]}`] ? <Menu
-                                                keepMounted
-                                                open={props.areaContextOpen[`${area["area"]}`]}
-                                                onClose={event => props.listItemContextClose(event, `${area["area"]}`)}
-                                                anchorReference="anchorPosition"
-                                                anchorPosition={props.contextMouseY !== null && props.contextMouseX !== null ?
-                                                    { top: props.contextMouseY, left: props.contextMouseX } : null}
-                                            >
-                                                <MenuItem disabled>{area["area"]}</MenuItem>
-                                                <hr />
-                                                {props.areaEnabled[`${area["area"]}`] ?
-                                                    <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}`, false)}>
-                                                        <ListItemIcon >
-                                                            <NotificationsOffIcon fontSize="small" />
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit">Disable Area</Typography>
-                                                    </MenuItem> :
-                                                    <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}`, true)}>
-                                                        <ListItemIcon >
-                                                            <NotificationsActiveIcon fontSize="small" />
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit">Enable Area</Typography>
-                                                    </MenuItem>
-                                                }
-                                                {props.areaEnabled[`${area["area"]}`] ?
-                                                    <MenuItem onClick={event => props.ackAllAreaAlarms(event, `${area["area"]}`)}>
-                                                        <ListItemIcon >
-                                                            <DoneAllIcon fontSize="small" />
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit">ACK all area alarms</Typography>
-                                                    </MenuItem> : null}
-                                            </Menu> : null
+                                            props.areaContextOpen[`${area["area"]}`]
+                                                ? <Menu
+                                                    keepMounted
+                                                    open={props.areaContextOpen[`${area["area"]}`]}
+                                                    onClose={event => props.listItemContextClose(event, `${area["area"]}`)}
+                                                    anchorReference="anchorPosition"
+                                                    anchorPosition={props.contextMouseY !== null && props.contextMouseX !== null ?
+                                                        { top: props.contextMouseY, left: props.contextMouseX } : null}
+                                                >
+                                                    <MenuItem disabled >{area["area"]}</MenuItem>
+                                                    <hr />
+                                                    {props.enableAllAreas ?
+                                                        props.areaEnabled[`${area["area"]}`] ?
+                                                            <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}`, false)}>
+                                                                <ListItemIcon >
+                                                                    <NotificationsOffIcon fontSize="small" />
+                                                                </ListItemIcon>
+                                                                <Typography variant="inherit">Disable Area</Typography>
+                                                            </MenuItem> :
+                                                            <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}`, true)}>
+                                                                <ListItemIcon >
+                                                                    <NotificationsActiveIcon fontSize="small" />
+                                                                </ListItemIcon>
+                                                                <Typography variant="inherit">Enable Area</Typography>
+                                                            </MenuItem>
+                                                        : <MenuItem >Enable All Areas First!</MenuItem>
+                                                    }
+                                                    {props.areaEnabled[`${area["area"]}`] && props.enableAllAreas ?
+                                                        <MenuItem onClick={event => props.ackAllAreaAlarms(event, `${area["area"]}`)}>
+                                                            <ListItemIcon >
+                                                                <DoneAllIcon fontSize="small" />
+                                                            </ListItemIcon>
+                                                            <Typography variant="inherit">ACK all area alarms</Typography>
+                                                        </MenuItem> : null}
+                                                </Menu>
+                                                : null
                                         }
 
                                         {
@@ -252,7 +256,7 @@ const AlarmList = props => {
                                                                         selected={props.areaSelectedIndex === `${area["area"]}=${subArea}`}
                                                                         onClick={event => props.listItemClick(event, `${area["area"]}=${subArea}`)}
                                                                         onContextMenu={event => props.listItemRightClick(event, `${area["area"]}=${subArea}`)}
-                                                                        classes={(props.areaEnabled[`${area["area"]}=${subArea}`]
+                                                                        classes={(props.areaEnabled[`${area["area"]}=${subArea}`] && props.enableAllAreas
                                                                             ? props.areaPVDict[`${area["area"]}=${subArea}`] == 6 || props.areaPVDict[`${area["area"]}=${subArea}`] == 4
                                                                                 ? { root: classes.majorAlarm }
                                                                                 : props.areaPVDict[`${area["area"]}=${subArea}`] == 5 || props.areaPVDict[`${area["area"]}=${subArea}`] == 3
@@ -280,31 +284,34 @@ const AlarmList = props => {
                                                                         {props.areaEnabled[`${area["area"]}`] ? <MenuItem disabled>{`${area["area"]} > ${subArea}`}</MenuItem> : null}
                                                                         {props.areaEnabled[`${area["area"]}`] ? <hr /> : null}
 
-                                                                        {props.areaEnabled[`${area["area"]}`] ?
-                                                                            props.areaEnabled[`${area["area"]}=${subArea}`] ?
-                                                                                <div>
-                                                                                    <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}=${subArea}`, false)}>
+                                                                        {props.enableAllAreas ?
+                                                                            props.areaEnabled[`${area["area"]}`] ?
+                                                                                props.areaEnabled[`${area["area"]}=${subArea}`] ?
+                                                                                    <React.Fragment>
+                                                                                        <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}=${subArea}`, false)}>
+                                                                                            <ListItemIcon >
+                                                                                                <NotificationsOffIcon fontSize="small" />
+                                                                                            </ListItemIcon>
+                                                                                            <Typography variant="inherit">Disable Area</Typography>
+                                                                                        </MenuItem>
+                                                                                        <MenuItem onClick={event => props.ackAllAreaAlarms(event, `${area["area"]}=${subArea}`)}>
+                                                                                            <ListItemIcon >
+                                                                                                <DoneAllIcon fontSize="small" />
+                                                                                            </ListItemIcon>
+                                                                                            <Typography variant="inherit">ACK all area alarms</Typography>
+                                                                                        </MenuItem>
+                                                                                    </React.Fragment>
+                                                                                    :
+                                                                                    <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}=${subArea}`, true)}>
                                                                                         <ListItemIcon >
-                                                                                            <NotificationsOffIcon fontSize="small" />
+                                                                                            <NotificationsActiveIcon fontSize="small" />
                                                                                         </ListItemIcon>
-                                                                                        <Typography variant="inherit">Disable Area</Typography>
+                                                                                        <Typography variant="inherit">Enable Area</Typography>
                                                                                     </MenuItem>
-                                                                                    <MenuItem onClick={event => props.ackAllAreaAlarms(event, `${area["area"]}=${subArea}`)}>
-                                                                                        <ListItemIcon >
-                                                                                            <DoneAllIcon fontSize="small" />
-                                                                                        </ListItemIcon>
-                                                                                        <Typography variant="inherit">ACK all area alarms</Typography>
-                                                                                    </MenuItem>
-                                                                                </div>
                                                                                 :
-                                                                                <MenuItem onClick={event => props.enableDisableArea(event, `${area["area"]}=${subArea}`, true)}>
-                                                                                    <ListItemIcon >
-                                                                                        <NotificationsActiveIcon fontSize="small" />
-                                                                                    </ListItemIcon>
-                                                                                    <Typography variant="inherit">Enable Area</Typography>
-                                                                                </MenuItem>
+                                                                                <MenuItem >Enable Parent Area First!</MenuItem>
                                                                             :
-                                                                            <MenuItem >Enable Parent Area First!</MenuItem>
+                                                                            <MenuItem >Enable All Areas First!</MenuItem>
                                                                         }
                                                                     </Menu>
                                                                 </React.Fragment>

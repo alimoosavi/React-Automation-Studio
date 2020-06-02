@@ -942,7 +942,7 @@ const AlarmHandler = props => {
             denseAppBar
             moreVertDrawerItems={moreVertDrawerItems}
             hideMoreVertDrawerAfterItemClick
-            // hideToggleThemeListItem
+        // hideToggleThemeListItem
         >
             {alarmPVs}
             {areaPVs}
@@ -1015,11 +1015,12 @@ const AlarmHandler = props => {
                                     </Menu>
                                 </Grid>
                                 <Grid item xs={10}>
-                                    <div style={{ paddingTop: 0, fontSize: 16, fontWeight: 'bold' }}>ALARM AREAS</div>
+                                    <div style={{ paddingTop: 0, fontSize: 16, fontWeight: 'bold' }}>{`ALARM AREAS ${enableAllAreas ? "" : "[DISABLED]"}`}</div>
                                 </Grid>
                                 <Grid item xs={12}>
                                     {areaNames ?
                                         <AlarmList
+                                            enableAllAreas={enableAllAreas}
                                             areaPVDict={areaPVDict}
                                             areaContextOpen={areaContextOpen}
                                             areaEnabled={areaEnabled}
@@ -1091,6 +1092,7 @@ const AlarmHandler = props => {
                             <ExpansionPanelDetails>
                                 {areaNames
                                     ? <AlarmTable
+                                        enableAllAreas={enableAllAreas}
                                         debug={alarmDebug}
                                         alarmPVDict={alarmPVDict}
                                         alarmRowSelected={alarmRowSelected}

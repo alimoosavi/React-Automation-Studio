@@ -101,13 +101,13 @@ def propAreaAlarms(pvname, value):
     if (bool(areaDict)):
         # wait for areaDict to be instantiated
         areaKey = getKeys(pvname)[0]
-        areaEnable, subAreaEnable, pvEnable = getEnables(pvname)
+        globalEnable, areaEnable, subAreaEnable, pvEnable = getEnables(pvname)
 
         if ("=" in areaKey):
             subArea = areaKey.split("=")[1]
             areaKey = areaKey.split("=")[0]
 
-            enable = areaEnable and subAreaEnable and pvEnable
+            enable = globalEnable and areaEnable and subAreaEnable and pvEnable
 
             if (enable):
                 evaluateAreaPVs(areaKey + "=" + subArea)
@@ -117,7 +117,7 @@ def propAreaAlarms(pvname, value):
                 evaluateAreaPVs(areaKey)
 
         else:
-            enable = areaEnable and pvEnable
+            enable = globalEnable and areaEnable and pvEnable
 
             if (enable):
                 evaluateAreaPVs(areaKey)
@@ -143,12 +143,12 @@ def evaluateAreaPVs(areaKey, fromColWatch=False):
         if (re.sub(r"=pv\d+", "", key) == areaKey):
             # exact match of area key
             val = alarmDict[pvDict[key].pvname]["A"].value
-            areaEnable, subAreaEnable, pvEnable = getEnables(
+            globalEnable, areaEnable, subAreaEnable, pvEnable = getEnables(
                 pvDict[key].pvname)
             if (subAreaEnable != None):
-                enable = areaEnable and subAreaEnable and pvEnable
+                enable = globalEnable and areaEnable and subAreaEnable and pvEnable
             else:
-                enable = areaEnable and pvEnable
+                enable = globalEnable and areaEnable and pvEnable
             if (not enable):
                 # pv not enabled
                 # force NO_ALARM state so neither alarm nor acked passed
@@ -247,7 +247,10 @@ def getEnables(pvname):
         subAreaEnable = None
         pvEnable = doc["pvs"][pvKey]["enable"]
 
-    return areaEnable, subAreaEnable, pvEnable
+    globalEnable = client[MONGO_INITDB_ALARM_DATABASE].glob.find_one()[
+        "enableAllAreas"]
+
+    return globalEnable, areaEnable, subAreaEnable, pvEnable
 
 
 def ackPVChange(value=None, timestamp=None, **kw):
@@ -432,7 +435,7 @@ def pvPrepareData(pvname, value, severity, timestamp, units, enum_strs):
         "%a, %d %b %Y at %H:%M:%S")
 
     areaKey, pvKey = getKeys(pvname)
-    areaEnable, subAreaEnable, pvEnable = getEnables(pvname)
+    globalEnable, areaEnable, subAreaEnable, pvEnable = getEnables(pvname)
 
     pvELN = []
 
@@ -443,7 +446,7 @@ def pvPrepareData(pvname, value, severity, timestamp, units, enum_strs):
         doc = client[MONGO_INITDB_ALARM_DATABASE].pvs.find_one(
             {"area": areaKey})
 
-        enable = areaEnable and subAreaEnable and pvEnable
+        enable = globalEnable and areaEnable and subAreaEnable and pvEnable
 
         pvELN.append(enable)
         pvELN.append(doc[subAreaKey]["pvs"][pvKey]["latch"])
@@ -453,7 +456,7 @@ def pvPrepareData(pvname, value, severity, timestamp, units, enum_strs):
         doc = client[MONGO_INITDB_ALARM_DATABASE].pvs.find_one(
             {"area": areaKey})
 
-        enable = areaEnable and pvEnable
+        enable = globalEnable and areaEnable and pvEnable
 
         pvELN.append(enable)
         pvELN.append(doc["pvs"][pvKey]["latch"])
@@ -948,14 +951,34 @@ def globalCollectionWatch():
         for change in stream:
             # print(change)
             try:
-                enableAllAreas = change["updateDescription"]["updatedFields"]["enableAllAreas"]
-                if(enableAllAreas):
-                    print("Enable all areas")
-                else:
-                    print("Disable all areas")
+                change = change["updateDescription"]["updatedFields"]
+                timestamp = time()
+                for key in change.keys():
+                    if (key == "enableAllAreas"):
+                        # print(areaKey, "area enable changed!")
+                        for area in areaList:
+                            if ("=" in area): 
+                                areaKey = area
+                                evaluateAreaPVs(areaKey, True)
+                            else:
+                                topArea = area
+                                # Log to history
+                                msg = "ENABLED" if change[key] else "DISABLED"
+                                entry = {"timestamp": timestamp, "entry": " ".join(
+                                    [topArea, "area", msg])}
+                                # print(timestamp, topArea,
+                                #   "area", msg)
+                                client[MONGO_INITDB_ALARM_DATABASE].history.update_many(
+                                    {'identifier': topArea},
+                                    {'$push': {
+                                        'history': {
+                                            '$each': [entry],
+                                            '$position': 0
+                                        }
+                                    }})
 
             except:
-                print("Error in updating global vars")
+                print("No relevant lobal var updates")
 
 
 def main():
