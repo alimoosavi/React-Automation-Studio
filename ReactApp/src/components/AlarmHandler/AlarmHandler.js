@@ -103,7 +103,9 @@ const AlarmHandler = props => {
     // console.log("AlarmHandler rendered")
 
     const classes = useStyles()
-    const socket = useContext(AutomationStudioContext).socket
+    const context = useContext(AutomationStudioContext)
+    const socket = context.socket
+    const username = context.userData.username
 
     // to connect to all PVs before updating state
     const firstAlarmPVDict = {}
@@ -289,6 +291,13 @@ const AlarmHandler = props => {
         // handleUpdateLogDisplayData('ALLAREAS')
     }
 
+    const handleAckGlobal = () => {
+        const localAlarmAckField = ['ALLAREAS', true]
+        setAlarmAckField(localAlarmAckField)
+        setAlarmAckFieldTrig(!alarmAckFieldTrig)
+        setGlobalContextOpen(false)
+    }
+
     const handleDisableEnableGlobal = (value) => {
         // console.log(value)
         let jwt = JSON.parse(localStorage.getItem('jwt'));
@@ -439,7 +448,6 @@ const AlarmHandler = props => {
 
     const handleAckAllAreaAlarms = useCallback((event, index) => {
         // console.log('Ack all alarms for', index)
-        let username = JSON.parse(localStorage.getItem('user'))
 
         let localAlarmAckField = null
         if (index.includes("=")) {
@@ -552,8 +560,6 @@ const AlarmHandler = props => {
         // console.log("Ack alarm:", index)
         event.preventDefault()
         event.stopPropagation()
-
-        let username = JSON.parse(localStorage.getItem('user'))
 
         const equalsLength = index.match(/=/g).length
         let localAlarmAckField = null
@@ -993,7 +999,7 @@ const AlarmHandler = props => {
                                                 <ListItemIcon >
                                                     <NotificationsOffIcon fontSize="small" />
                                                 </ListItemIcon>
-                                                <Typography variant="inherit">Disable ALLAREAS</Typography>
+                                                <Typography variant="inherit">Disable ALL AREAS</Typography>
                                             </MenuItem> :
                                             <MenuItem
                                                 onClick={() => handleDisableEnableGlobal(true)}
@@ -1001,15 +1007,16 @@ const AlarmHandler = props => {
                                                 <ListItemIcon >
                                                     <NotificationsActiveIcon fontSize="small" />
                                                 </ListItemIcon>
-                                                <Typography variant="inherit">Enable ALLAREAS</Typography>
+                                                <Typography variant="inherit">Enable ALL AREAS</Typography>
                                             </MenuItem>
                                         }
                                         <MenuItem
+                                            onClick={handleAckGlobal}
                                         >
                                             <ListItemIcon >
                                                 <DoneAllIcon fontSize="small" />
                                             </ListItemIcon>
-                                            <Typography variant="inherit">ACK ALLAREAS' alarms</Typography>
+                                            <Typography variant="inherit">ACK ALL AREAS' alarms</Typography>
                                         </MenuItem>
 
                                     </Menu>

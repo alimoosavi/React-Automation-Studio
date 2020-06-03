@@ -267,6 +267,13 @@ def ackProcess(ackArray, timestamp):
     # reset ack pv so you can ack same pv/area multiple times
     alarmDict["ACK_PV"].value = []
 
+    if(len(ackArray) > 2):
+        ackNormal(ackArray, timestamp)
+    else:
+        ackGlobal(timestamp)
+
+
+def ackNormal(ackArray, timestamp):
     # ackArray
     # 0 identifier 0 = area, 1 = subArea, 2 = area_pv, 3 = subArea_pv
     # 1 area
@@ -310,6 +317,10 @@ def ackProcess(ackArray, timestamp):
                 areaKey = areaKey.split("=")[0]  # areaKey is area
             if(areaKey == ackIdentifier):
                 ackAlarm(key, timestamp, username)
+
+
+def ackGlobal(timestamp):
+    print(timestamp, "Global ack")
 
 
 def ackAlarm(ackIdentifier, timestamp, username):
